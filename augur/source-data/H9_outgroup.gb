@@ -1,0 +1,88 @@
+LOCUS       AY206671                1683 bp    mRNA    linear   VRL 03-MAR-2003
+DEFINITION  Influenza A virus (A/duck/HongKong/147/1977(H9N6)) hemagglutinin
+            precursor, mRNA, complete cds.
+ACCESSION   AY206671
+VERSION     AY206671.1  GI:28775925
+KEYWORDS    .
+SOURCE      Influenza A virus (A/duck/HongKong/147/1977(H9N6))
+  ORGANISM  Influenza A virus (A/duck/HongKong/147/1977(H9N6))
+            Viruses; ssRNA viruses; ssRNA negative-strand viruses;
+            Orthomyxoviridae; Influenzavirus A.
+REFERENCE   1  (bases 1 to 1683)
+  AUTHORS   Perez,D.R., Lim,W., Seiler,J.P., Yi,G., Peiris,M., Shortridge,K.F.
+            and Webster,R.G.
+  TITLE     Role of quail in the interspecies transmission of H9 influenza A
+            viruses: molecular changes on HA that correspond to adaptation from
+            ducks to chickens
+  JOURNAL   J. Virol. 77 (5), 3148-3156 (2003)
+   PUBMED   12584339
+REFERENCE   2  (bases 1 to 1683)
+  AUTHORS   Perez,D.R., Lim,W., Seiler,J.P., Yi,G., Peiris,M., Shortridge,K.F.
+            and Webster,R.G.
+  TITLE     Direct Submission
+  JOURNAL   Submitted (23-DEC-2002) Division of Virology, Dept. of Infectious
+            Diseases, St. Jude Children's Research Hospital, 332 North
+            Lauderdale St., Memphis, TN 38105, USA
+FEATURES             Location/Qualifiers
+     source          1..1683
+                     /mol_type="mRNA"
+                     /db_xref="taxon:221113"
+                     /serotype="H9"
+                     /strain="A/duck/HongKong/147/1977(H9N6)
+                     /organism="Influenza A virus (A/duck/HongKong/147/1977(H9N6))"
+     CDS             1..1683
+                     /db_xref="GI:28775926"
+                     /product="hemagglutinin precursor"
+                     /codon_start=1
+                     /translation="METIALIAILLMVTTSNADKICIGYQSTNSTETVDTLTENNVPV
+                     THTKELLHTEHNGMLCATNLGHPLILDTCTIEGLVYGNPSCDLLLGGKEWSYIVERSS
+                     AVNGMCYPGNVENLEELRSFFSSANSYRRIQIFPDTIWNVTYTGTSRACSNSFYRSMR
+                     WLTHKSNSYPVQDAQYTNNEGKNILFMWGIHHPPTDTEQTSLYKKADTTTSVTTEDIN
+                     RTFKPVIGPRPLVNGQQGRIDYYWSVLKPGQTLRVRSNGNLIAPWYGHILSGESHGRI
+                     LKTDLNSGNCVVQCQTEKGGLNTTLPFHNVSKYAFGNCPKYVGVKSLKLAVGLRNVPA
+                     ASNRGLFGAIAGFIEGGWPGLVAGWYGFQHSNDQGVGMAADRKSTQEAVDKITSKVNN
+                     IIDKMNKQYEIIDHEFSEIEARLNMINNKIDDQIQDIWAYNAELLVLLENQKTLDEHD
+                     ANVNNLYNKVKRALGSNAIEDGNGCFELYHKCDDQCMETIRNGTYDRQKYQEESKLER
+                     QKIEGVKLESEGTYKILTIYSTVASSLVLAMGFAAFLFWAMSNGSCRCNICI"
+                     /protein_id="AAO46077.1"
+     CDS             1..54
+                     /product="Signal peptide"
+                     /gene="SigPep"
+     CDS             55..1008
+                     /product="HA1 protein"
+                     /gene="HA1"
+     CDS             1009..1683
+                     /product="HA2 protein"
+                     /gene="HA2"
+
+ORIGIN
+        1 atggaaacaa tagcactaat agctatactg ttaatggtaa caacaagcaa tgcagacaaa
+       61 atctgcatcg gctaccagtc aacaaactcc acggaaactg ttgatacact aacagaaaac
+      121 aatgttcctg tgacacatac caaagaattg ctccacacag agcacaatgg aatgttgtgt
+      181 gcaacaaatc tgggacatcc tctcattcta gacacctgta ctatcgaagg attggtttat
+      241 ggcaatcctt cttgtgatct gctattggga gggaaagaat ggtcctacat tgtcgaaagg
+      301 tcatcggctg tcaatggaat gtgttaccct ggaaatgtag agaacctgga agaactcagg
+      361 tcctttttca gttctgctaa ttcctatcga agaatccaga tctttccaga tacaatctgg
+      421 aatgtgactt acactggaac aagcagagca tgttctaact cattttacag gagtatgaga
+      481 tggctgactc acaagagcaa ttcttaccct gttcaagacg cccaatacac caacaatgag
+      541 ggaaagaaca ttctcttcat gtggggcata catcacccac ctactgacac tgaacaaaca
+      601 agtctataca aaaaggctga cacaacaaca agtgtaacaa cagaagatat aaatcgaact
+      661 ttcaaaccag tgatagggcc aaggcctctt gtcaatggtc agcaagggag gattgactat
+      721 tattggtcgg tactaaaacc aggtcagaca ttgcgagtga ggtccaatgg gaatctaatt
+      781 gccccatggt atggacacat tctttcagga gaaagccatg gaagaatcct gaagaccgat
+      841 ttgaacagtg gcaactgcgt agtacaatgt cagactgaga aaggtggctt aaacacaacc
+      901 ttgccgttcc acaatgtcag caaatatgca tttgggaact gccccaaata cgttggagtt
+      961 aagagtctca aactggcagt cggcctgagg aatgtacctg ctgcatcaaa tagagggcta
+     1021 tttggtgcca tagctggctt catagaaggg ggttggccag ggctagttgc tggctggtat
+     1081 ggtttccagc attcaaatga ccaaggggtt ggaatggctg cagacaggaa gtcaacccaa
+     1141 gaagcagttg acaagataac atccaaagtg aacaatataa ttgacaaaat gaacaagcag
+     1201 tatgaaatca ttgatcatga attcagtgag attgaagcca gactcaatat gatcaacaat
+     1261 aagattgatg accaaataca ggacatctgg gcatacaatg cagagttact agtactgctt
+     1321 gaaaatcaga aaacactcga tgagcatgat gcgaatgtaa acaatctata taacaaggtg
+     1381 aagagagctt tgggttctaa tgcaatagaa gatggaaatg gatgctttga attgtaccac
+     1441 aaatgtgatg atcaatgcat ggaaacgatt agaaacggaa cctatgacag gcaaaagtat
+     1501 caagaggaat caaaattaga aaggcagaag atagaagggg taaaactgga atctgaggga
+     1561 acttacaaaa ttctcaccat ttattcgact gtcgcctcat ctcttgtgct tgcaatgggg
+     1621 tttgctgcct tcctgttctg ggccatgtcc aatggatctt gcagatgcaa catttgtata
+     1681 taa
+//
