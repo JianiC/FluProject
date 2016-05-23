@@ -9,6 +9,14 @@ var regions = [
 ["SoutheastAsia",  	"#E59637"],
 ["SouthAsia",  		"#E67030"],
 ["JapanKorea",  	"#DF4327"],
-["China",			"#FFB6C1"],
+["China",			"#9370DB"],
 ["Unknown",  		"#778899"]
+];
+
+var hosts = [
+["Avian",  			"#5097BA"],
+["Swine", 		 	"#DF4327"],
+["Other mammal",  	"#75B681"],
+["Human",  			"#C4B945"],	
+["Unknown",  		"#778899"],
 ];

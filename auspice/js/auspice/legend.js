@@ -3,18 +3,6 @@ var legendSpacing = 4;
 function makeLegend(){
 
 	d3.select("#legend-title").html(function(d){
-		if (colorBy == "ep") {
-			return "Epitope mutations";
-		}
-		if (colorBy == "ne") {
-			return "Non-epitope mutations";
-		}
-		if (colorBy == "rb") {
-			return "Receptor binding mutations";
-		}
-		if (colorBy == "lbi") {
-			return "Local branching index";
-		}
 		if (colorBy == "region") {
 			return "Region";
 		}
@@ -24,11 +12,8 @@ function makeLegend(){
 		if (colorBy == "date") {
 			return "Date";
 		}
-        if (colorBy == "cHI") {
-            return "log<sub>2</sub> titer distance from root";
-        }
-        if (colorBy == "HI_dist") {
-            return "log<sub>2</sub> titer distance from "+focusNode.strain;
+        if (colorBy == "host") {
+            return "Host";
         }
 		if (colorBy == "dfreq") {
 			var tmp_nmonth = Math.round(12*dfreq_dn*time_step);
