@@ -71,6 +71,21 @@ categories:
 					{% endif %}
 				</form>
 				<div class="spacer"></div>
+				
+				{% for res in site.data.restrictionsH %}
+				<from class="form-horizontal form-small">
+					<div class="form-group">
+						<label class="col-xs-4 control-label">{{res.label}}</label>
+						<div class="col-xs-8 controls">
+							<select id="{{res.id}}" class="form-control">
+								{% for hos in res.fields %}
+								<option value="{{ hos[0] }}">{{hos[1] }}</option>
+								{% endfor %}
+							</select>
+						</div>
+					</div>
+				</form>
+				{% endfor %}
 
 				{% for res in site.data.restrictions %}
 				<form class="form-horizontal form-small">
