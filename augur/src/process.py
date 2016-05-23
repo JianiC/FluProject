@@ -36,6 +36,7 @@ virus_config = {
 	# frequency estimation parameters
 	'aggregate_regions': [  ("global", None), ("NA", ["NorthAmerica"]), ("EU", ["Europe"]),
 							("AS", ["China", "SoutheastAsia", "JapanKorea"]), ("OC", ["Oceania"]) ],
+	'aggregate_hosts': [  ("globalh", None), ("A", ["Avian"]), ("S", ["Swine"]), ("O", ["Other mammal"]), ("H", ["Human"]) ],
 	'frequency_stiffness':10.0,
 	'verbose':2,
 	'tol':2e-4, #tolerance for frequency optimization
@@ -156,7 +157,7 @@ class process(virus_frequencies):
 		except:
 			pass
 
-	def export_to_auspice(self, tree_fields = [], tree_pop_list = [], annotations = [], seq='aa'):
+	def export_to_auspice(self, tree_fields = [], tree_pop_list = [], annotations = [], annotationsh = [], seq='aa'):
 		from tree_util import dendropy_to_json, all_descendants
 		from io_util import write_json, read_json
 		print "--- Streamline at " + time.strftime("%H:%M:%S") + " ---"
@@ -190,6 +191,11 @@ class process(virus_frequencies):
 						node["freq"][reg] = [round(x,3) for x in node["freq"][reg]]
 					except:
 						node["freq"][reg] = "undefined"
+				for hos in node["freq"]:
+					try:
+						node["freq"][hos] = [round(x,3) for x in node["freq"][hos]]
+					except:
+						node["freq"][hos] = "undefined"
 
 		'''if hasattr(self,"clade_designations"):
 			# find basal node of clade and assign clade x and y values based on this basal node
@@ -267,7 +273,14 @@ class process(virus_frequencies):
 		if hasattr(self,"date_region_count"):
 			meta["regions"] = self.regions
 			meta["virus_stats"] = [ [str(y)+'-'+str(m)] + [self.date_region_count[(y,m)][reg] for reg in self.regions]
-									for y,m in sorted(self.date_region_count.keys()) ]
+															for y,m in sorted(self.date_region_count.keys()) ]
+		write_json(meta, self.auspice_meta_fname, indent=0)
+		self.export_accession_numbers()
+		
+		if hasattr(self,"date_host_count"):
+			meta["hosts"] = self.hosts 
+			meta["virus_states"] = [ [str(y)+'-'+str(m)] + [self.date_host_count[(y,m)][hos] for hos in self.hosts]
+															for y,m in sorted(self.date_host_count.keys()) ]
 		write_json(meta, self.auspice_meta_fname, indent=0)
 		self.export_accession_numbers()
 
@@ -440,7 +453,19 @@ class process(virus_frequencies):
 		# add a sorted list of all regions to self and calculate region totals
 		self.regions = sorted(regions)
 		self.region_totals = {reg:sum(val[reg] for val in self.date_region_count.values()) for reg in self.regions}
-
+		
+	def temporal_host_statistics(self):
+		from collections import defaultdict, Counter
+		self.date_host_count = defaultdict(lambda:defaultdict(int))
+		hosts = set()
+		for v in self.viruses:
+			if v.strain != self.outgroup['species']:
+				year, month, day = map(int, v.date.split('-'))
+				self.date_host_count[(year, month)][v.host]+=1
+				hosts.add(v.host)
+		self.hosts = sorted(hosts)
+		self.host_totals = {hos:sum(val[hos] for val in self.date_host_count.values()) for hos in self.hosts}
+		
 	def determine_variable_positions(self):
 		'''
 		calculates nucleoties_frequencies and aa_frequencies at each position of the alignment
@@ -452,6 +477,7 @@ class process(virus_frequencies):
 		self.variable_aa
 		'''
 		aln_array = np.array(self.nuc_aln)
+		#aln_arrayh = np.array(self.nuc_alnh)
 		self.nuc_frequencies = np.zeros((len(self.nuc_alphabet),aln_array.shape[1]))
 		for ni,nuc in enumerate(self.nuc_alphabet):
 			self.nuc_frequencies[ni,:]=(aln_array==nuc).mean(axis=0)
@@ -491,6 +517,8 @@ class process(virus_frequencies):
 			self.all_mutation_frequencies(threshold = self.min_mutation_frequency, gene='nuc')
 		if 'genotypes' in tasks:
 			self.all_genotypes_frequencies(threshold = self.min_genotype_frequency)
+		#if 'specieshost' in tasks:
+			#self.all_specieshost_frequencies(threshold = self.min_specieshost_frequency)
 		if 'clades' in tasks:
 			self.all_clade_frequencies()
 		if 'nuc_clades' in tasks:

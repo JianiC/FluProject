@@ -215,11 +215,13 @@ class virus_frequencies(object):
 	def __init__(self, time_interval = (2012.0, 2015.1),
 				frequency_stiffness = 10.0, pivots_per_year = 12.0,
 				aggregate_regions = None,
+				#aggregate_hosts = None,
 				extra_pivots = 5, **kwargs):
 		self.stiffness = frequency_stiffness
 		self.pivots_per_year = pivots_per_year
 		#self.clade_designations=clade_designations
 		self.aggregate_regions = aggregate_regions
+		#self.aggregate_hosts = aggregate_hosts
 		self.extra_pivots = extra_pivots
 		self.pivots = get_pivots(self.time_interval[0], self.time_interval[1], self.pivots_per_year)
 		self.freq_kwargs = kwargs
@@ -254,7 +256,32 @@ class virus_frequencies(object):
 		else:
 			if self.verbose: print "too few observations", len(tps), sum(obs)
 			return None, (tps, obs)
+			
+	'''
+	def estimate_specieshost_frequency(self, aln, sh, threshold = 10, min_observations = -1):
+		all_dates = [seq.annotations['num_date'] for seq in aln]
+		reduced_sh = tuple(aa for pos,aa in sh)
+		shs = zip(*[list(aln[:,pos]) for pos, aa in sh])
+		observations = [x==reduced_sh for x in shs]
 
+		all_dates = np.array(all_dates)
+		leaf_order = np.argsort(all_dates)
+		tps = all_dates[leaf_order]
+		obs = np.array(observations)[leaf_order]
+
+		if len(tps)>threshold and np.sum(obs)>min_observations and np.sum(obs)<len(obs)-min_observations:
+			if self.verbose:
+				print "# of time points",len(tps), "# observations",sum(obs)
+			fe = frequency_estimator(zip(tps, obs), pivots=self.pivots, extra_pivots = self.extra_pivots,
+			               stiffness=self.stiffness*float(len(observations))/len(self.viruses),
+		                   logit=True, **self.freq_kwargs)
+			fe.learn()
+			return fe.frequency_estimate, (tps,obs)
+		else:
+			if self.verbose: print "too few observations", len(tps), sum(obs)
+			return None, (tps, obs)
+	'''
+			
 	def get_sub_alignment(self, regions=None, gene='nuc'):
 		from Bio.Align import MultipleSeqAlignment
 		sub_aln = []
@@ -266,7 +293,17 @@ class virus_frequencies(object):
 					sub_aln.append(seq)
 					all_dates.append(seq_date)
 		return MultipleSeqAlignment(sub_aln)
-
+		
+		'''
+		for seq in self.nuc_aln if gene=='nuc' else self.aa_aln[gene]:
+			if hosts is None or seq.annotations['host'] in hosts:
+				seq_date = seq.annotations['num_date']
+				if seq_date>=self.time_interval[0] and seq_date < self.time_interval[1]:
+					sub_alian.append(seq)
+					all_dates.append(seq_date)
+		return MultipleSeqAlignment(sub_aln)
+		'''
+	
 	def determine_mutation_frequencies(self, regions=None, threshold=0.01, gene='nuc'):
 		'''
 		determine the abundance of all single position variants
@@ -287,7 +324,27 @@ class virus_frequencies(object):
 					if est_freq is not None:
 						mutation_frequencies[mut] = list(np.round(logit_inv(est_freq.y),3))
 		return mutation_frequencies
+	
+	'''	
+	def determine_mutation_frequenciesh(self, hosts=None, threshold=0.01, gene='nuc'):
+		sub_alnh = self.get_sub_alignment(hosts, gene=gene)
+		if gene=='nuc':
+			alpha, freqs = self.nuc_alphabet, self.nuc_frequencies
+		else:
+			alpha, freqs = self.aa_alphabet, self.aa_frequencies[gene]
 
+		mutation_frequenciesh = {"pivots":list(self.pivots)}
+		for pos in xrange(sub_aln.get_alignment_length()):
+			for ai, aa in enumerate(alpha):
+				if freqs[ai,pos]>threshold and freqs[ai,pos]<1.0-threshold:
+					mut = gene+':'+str(pos+1)+aa
+					print "estimating freq of ", mut, "total frequency:", freqs[ai,pos]
+					est_freq, (tps, obs) = self.estimate_genotype_frequency(sub_aln, [(pos, aa)])
+					if est_freq is not None:
+						mutation_frequencies[mut] = list(np.round(logit_inv(est_freq.y),3))
+		return mutation_frequenciesh
+	'''
+		
 	def determine_HI_mutation_frequencies(self, regions=None, threshold=0.3, gene='HA1'):
 		'''
 		determine the abundance of all single position variants
@@ -335,6 +392,26 @@ class virus_frequencies(object):
 								gt_label = '/'.join(str(pos+1)+aa for pos,aa in gt)
 								genotype_frequencies[gt_label] = list(np.round(logit_inv(freq.y),3))
 		return genotype_frequencies
+		
+	'''
+	def determine_specieshost_frequencies(self, hosts=None, threshold=0.1, gene='nuc'):
+		sub_aln = self.get_sub_alignment(hosts, gene=gene)
+		specieshost_frequencies = {"pivots":list(self.pivots)	}
+		relevant_pos = np.where(1.0 - self.aa_frequencies.max(axis=0)>threshold)[0]
+		for i1,pos1 in enumerate(relevant_pos[:-1]):
+			for pos2 in relevant_pos[i1+1:]:
+				for ai1, aa1 in enumerate(self.aa_alphabet):
+					for ai2, aa2 in enumerate(self.aa_alphabet):
+						if self.aa_frequencies[ai1,pos1]>threshold \
+						and self.aa_frequencies[ai2,pos2]>threshold:
+							sh = [(pos1,aa1),(pos2,aa2)]
+							if self.verbose: print "estimating freq of ", sh
+							freq, (tps, obs) = self.estimate_genotype_frequency(sub_aln, gt, min_observations = 10)
+							if freq is not None:
+								sh_label = '/'.join(str(pos+1)+aa for pos,aa in sh)
+								specieshost_frequencies[gt_label] = list(np.round(logit_inv(freq.y),3))
+		return specieshost_frequencies
+	'''
 
 	def determine_clade_frequencies(self, clades, regions=None, gene='nuc'):
 		'''
@@ -350,6 +427,19 @@ class virus_frequencies(object):
 			if freq is not None:
 				clade_frequencies[clade_name.lower()] = list(np.round(logit_inv(freq.y),3))
 		return clade_frequencies
+		
+	'''
+	def determine_clade_frequenciesh(self, clades, hosts=None, gene='nuc'):
+		sub_alnh = self.get_sub_alignment(hosts, gene)
+		clade_frequenciesh = {"pivots":list(self.pivots)}
+
+		for ci, (clade_name, clade_sh) in enumerate(clades.iteritems()):
+			print "estimating frequency of clade", clade_name, clade_sh
+			freq, (tps, obs) = self.estimate_specieshost_frequency(sub_alnh, [(gene, pos-1, aa) for gene, pos, aa in clade_sh])
+			if freq is not None:
+				clade_frequenciesh[clade_name.lower()] = list(np.round(logit_inv(freq.y),3))
+		return clade_frequenciesh
+	'''
 
 	def estimate_sub_frequencies(self, node, all_dates, tip_to_date_index, pivots = None,
 						threshold=50, region_name="global", time_interval=None):
@@ -399,16 +489,58 @@ class virus_frequencies(object):
 				else:
 					break
 			ci+=1
+			
+		'''
+		if node.freq[host_name] is None:
+			frequency_left=None
+		else:
+			frequency_left = np.array(node.freq[host_name])
+		ci=0
+		# need to resort, since the clade size order might differs after subsetting to hosts
+		children_by_size = sorted(node.child_nodes(), key = lambda x:len(x.tips), reverse=True)
+		if debug: print '###',len(node.tips), frequency_left[-5:]
+		for child in children_by_size[:-1]: # clades are ordered by decreasing size
+			if len(child.tips)<threshold: # skip tiny clades
+				break
+			else:
+				# note that dates are unique, hence we can filter by date match
+				obs = np.in1d(tps, all_dates[tip_to_date_index[child.tips]])
+				if len(obs)>threshold:
+					# make n pivots a year, interpolate frequencies
+					# FIXME: adjust stiffness to total number of observations in a more robust manner
+					fe = frequency_estimator(zip(tps, obs), pivots=pivots, stiffness=self.stiffness*len(all_dates)/2000.0, 
+											logit=True, extra_pivots = self.extra_pivots, verbose=False, **self.freq_kwargs)
+					fe.learn()
+
+					# assign the frequency vector to the node
+					child.freq[host_name] = frequency_left * logit_inv(fe.final_pivot_freq)
+					child.logit_freq[host_name] = logit_transform(child.freq[host_name])
+					if debug: print len(child.tips), child.freq[host_name][-5:]
+
+					# update the frequency remaining to be explained and prune explained observations
+					frequency_left *= (1.0-logit_inv(fe.final_pivot_freq))
+					tps_left = np.ones_like(tps,dtype=bool)
+					tps_left[obs]=False # prune observations from clade
+					tps = tps[tps_left]
+				else:
+					break
+			ci+=1
+		'''
 
 		# if the above loop finished assign the frequency of the remaining clade to the frequency_left
 		if ci==len(node.child_nodes())-1 and frequency_left is not None:
 			last_child = children_by_size[-1]
 			last_child.freq[region_name] = np.array(frequency_left)
 			last_child.logit_freq[region_name] = logit_transform(last_child.freq[region_name])
+			#last_child.freq[host_name] = np.array(host_left)
+			#last_child.logit_freq[host_name] = logit_transform(last_child.freq[host_name])
 		else:  # broke out of loop because clades too small. 
 			for child in children_by_size[ci:]: # assign freqs of all remaining clades to None.
 				child.freq[region_name] = frequency_left/(len(children_by_size)-ci)
 				child.logit_freq[region_name] = logit_transform(child.freq[region_name])
+			#for child in children_by_size[ci:]: # assign freqs of all remaining clades to None.
+				#child.freq[host_name] = frequency_left/(len(children_by_size)-ci)
+				#child.logit_freq[host_name] = logit_transform(child.freq[host_name])
 		# recursively repeat for subclades
 		for child in node.child_nodes():
 			self.estimate_sub_frequencies(child, all_dates, tip_to_date_index, pivots=pivots,
@@ -424,6 +556,7 @@ class virus_frequencies(object):
 		rootnode = self.tree.seed_node
 		# loop over all nodes, make time ordered lists of tips, restrict to the specified regions
 		tip_index_region_specific = 0
+		#tip_index_host_specific = 0
 		if time_interval is None: time_interval = self.time_interval
 		if not hasattr(self.tree.seed_node, "virus_count"): self.tree.seed_node.virus_count = {}
 		for node in self.tree.postorder_node_iter():
@@ -433,6 +566,10 @@ class virus_frequencies(object):
 					all_dates.append(node.num_date)
 					tmp_tips.append((tip_index_region_specific, node.num_date))
 					tip_index_region_specific +=1
+				#if hosts is None or node.host in hosts:
+					#all_dates.append(node.num_date)
+					#tmp_tips.append((tip_index_host_specific, node.num_date))
+					#tip_index_host_specific +=1
 			for child in node.child_nodes():
 				tmp_tips.extend(child.tips)
 			node.tips = np.array([x for x in sorted(tmp_tips, key = lambda x:x[1] )])
@@ -456,6 +593,10 @@ class virus_frequencies(object):
 			region_name="global"
 		elif region_name is None:
 			region_name = ",".join(regions)
+		'''if hosts is None and host_name is None:
+			host_name="globalh"
+		elif host_name is None:
+			host_name = ",".join(hosts)'''
 		# set the frequency of the root node to 1, the logit frequency to a large value
 		rootnode.pivots = pivots
 		rootnode.virus_count[region_name] = np.histogram(all_dates, bins = pivots)[0]
@@ -485,6 +626,16 @@ class virus_frequencies(object):
 		for region_label, regions in self.aggregate_regions:
 			print "--- "+"determining genotype frequencies "+region_label+ " "  + time.strftime("%H:%M:%S") + " ---"
 			self.frequencies["genotypes"][region_label] = self.determine_genotype_frequencies(regions, threshold=threshold)
+			
+	'''
+	def all_specieshost_frequencies(self, threshold = 0.1):
+		if not hasattr(self, 'nuc_frequencies'):
+			self.determine_variable_positions()
+		self.frequencies["specieshost"]={}
+		for host_label, hosts in self.aggregate_hosts:
+			print "--- "+"determining host frequencies "+host_label+ " " + time.strftime("%H:%M:%S") + " ---"
+			self.frequencies["specieshost"][host_label] = self.determine_specieshost_frequencies(hosts, threshold=threshold)
+	'''
 
 
 	'''def all_clade_frequencies(self, clades = None, gene='nuc'):

@@ -23,6 +23,7 @@ virus_config.update({
 	'force_include_all':True,
 	'date_spec':'year',
 	'max_global':True,   # sample as evenly as possible from different geographic regions
+	'max_globalh':True,
 	'cds':[0,None], # define the HA1 start i n 0 numbering
 	'n_iqd':5,
 	'min_mutation_frequency':0.01,
@@ -38,7 +39,7 @@ virus_config.update({
 	#'epitope_mask_version':'wolf',
 	'HI_fname':'/Users/yujia_zhou/Documents/Work/H9_nextflu-master/augur/src/data/H9_HI_titers.txt',
 	'auspice_prefix':'H9_',
-	'html_vars': {'coloring': 'ep, ne, rb, lbi, dfreq, region, date, cHI, HI_dist',
+	'html_vars': {'coloring': 'ep, ne, rb, lbi, dfreq, region, host, date, cHI, HI_dist',
 				   'gtplaceholder': 'HA1 positions...',
 					'freqdefault': '3c2.a, 3c3.a, 3c3.b'},
 	'js_vars': {'LBItau': 0.0005, 'LBItime_window': 0.5, 'dfreq_dn':2},
@@ -242,10 +243,11 @@ class H9_fitness(fitness_model):
 class H9_process(process, H9_filter, H9_clean, H9_refine, H9_fitness):
 	"""docstring for H9_process, H9_filter"""
 	def __init__(self,verbose = 0, force_include = None,
-				force_include_all = False, max_global= True, **kwargs):
+				force_include_all = False, max_global= True, max_globalh= True, **kwargs):
 		self.force_include = force_include
 		self.force_include_all = force_include_all
 		self.max_global = max_global
+		self.max_globalh = max_globalh
 		process.__init__(self, **kwargs)
 		H9_filter.__init__(self,**kwargs)
 		H9_clean.__init__(self,**kwargs)

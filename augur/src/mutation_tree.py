@@ -63,6 +63,7 @@ class mutation_tree(process, flu_filter, tree_refine, virus_clean):
 					return
 		self.viruses.append(self.outgroup)
 		self.filter_geo(prune=False)
+		self.filter_host(prune=False)
 		self.make_strain_names_unique()
 
 	def refine(self):

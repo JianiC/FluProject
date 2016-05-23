@@ -43,8 +43,13 @@ class tree_refine(object):
 		tmp_nucseqs = [SeqRecord(Seq(node.seq), id=node.strain, 
 					  annotations = {'num_date':node.num_date, 'region':node.region}) 
 					  for node in self.tree.leaf_node_iter()]
+		tmp_nucseqsh = [SeqRecord(Seq(node.seq), id=node.strain,
+						annotationsh = {'num_date':node.num_date, 'host':node.host})
+						for node in self.tree.leaf_node_iter()]
 		tmp_nucseqs.sort(key = lambda x:x.annotations['num_date'])
+		tmp_nucseqsh.sort(key = lambda x:x.annotationsh['num_date'])
 		self.nuc_aln = MultipleSeqAlignment(tmp_nucseqs)
+		self.nuc_alnh = MultipleSeqAlignment(tmp_nucseqsh)
 
 
 	def remove_outgroup(self):
@@ -117,7 +122,12 @@ class tree_refine(object):
 			              annotations = {'num_date':node.num_date, 'region':node.region}) 
 						  for node in self.tree.leaf_node_iter()]
 			tmp_aaseqs.sort(key = lambda x:x.annotations['num_date'])
+			tmp_aaseqsh = [SeqRecord(Seq(node.aa_seq[anno]), id=node.strain,
+							annotationsh = {'num_date':node.num_date, 'jost':node.host})
+							for node in self.tree.leaf_node_iter()]
+			tmp_aaseqsh.sort(key = lambda x:x.annotationsh['num_date'])
 			self.aa_aln[anno] = MultipleSeqAlignment(tmp_aaseqs)
+			self.aa_aln[anno] = MultipleSeqAlignment(tmq_aaseqsh)
 
 	def add_aa_mutations(self):
 		if hasattr(self.tree.seed_node, 'aa_seq'):
@@ -165,7 +175,7 @@ class tree_refine(object):
 		for v in self.viruses:
 			if v.strain in self.node_lookup:
 				node = self.node_lookup[v.strain]
-				for attr in self.fasta_fields.values() + ['num_date', 'db', 'region', 'country']:
+				for attr in self.fasta_fields.values() + ['num_date', 'db', 'region', 'host', 'country']:
 					try:
 						node.__setattr__(attr, v.__getattribute__(attr))
 					except:

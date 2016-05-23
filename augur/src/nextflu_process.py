@@ -88,6 +88,10 @@ class nextflu(object):
 														threshold = config['min_mutation_count'], plot=plot)
 		if 'genotypes' in tasks:
 			self.frequencies['genotypes'] = freq_est.all_genotypes(self.tree, config['aggregate_regions'], relevant_pos)
+			
+		#if 'specieshost' in tasks:
+			#self.frequencies['specieshost'] = freq_est.all_genotypes(self.tree, config['aggregate_hosts'], relevant_pos)
+			
 		'''if 'clades' in tasks:
 			self.frequencies['clades'] = freq_est.all_clades(self.tree, config['clade_designations'], 
 															config['aggregate_regions'], plot)'''
