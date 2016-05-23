@@ -41,7 +41,7 @@ class virus_filter(object):
 		date_spec        -- if 'full', dates with day are required, if 'year', only year is accepted
 		'''
 		if fasta_fields is None:
-			self.fasta_fields = {0:'strain', 1:'date' }
+			self.fasta_fields = {0:'strain', 1:'date', 9:'species' }
 		else:
 			self.fasta_fields = fasta_fields
 		self.alignment_file = alignment_file
@@ -124,8 +124,18 @@ class virus_filter(object):
 			for v in self.viruses:
 				if re.match(r'\d\d\d\d-\d\d-\d\d', v['date']) is None:
 					v['date'] = v['date'][:4]+'-'+format(np.random.randint(12)+1, '02d')+'-01'
+	'''				
+	def filter_dateh(self):
+		if self.date_spec=='full':
+			self.viruses = filter(lambda v: re.match(self.date_format['hos'], v['date']) is not None, self.viruses)
+		elif self.date_spec=='year':
+			self.viruses = filter(lambda v: re.match(r'\d\d\d\d', v['date']) is not None, self.viruses)
+			for v in self.viruses:
+				if re.match(r'\d\d\d-\d\d-\d\d', v['date']) is None:
+					v['date'] = v['date'][:4]+'-'+format(np.random.randint(12)+1, '02d')+'-01'
+	'''
 
-	def subsample(self, viruses_per_month, prioritize = None, all_priority=False, region_specific = True):
+	def subsample(self, viruses_per_month, prioritize = None, all_priority=False, region_specific = True, host_specific = True):
 		'''
 		Subsample x viruses per month
 		Take from beginning of list - this will prefer longer sequences
@@ -140,6 +150,10 @@ class virus_filter(object):
 			select_func = self.select_viruses
 		else:
 			select_func = self.select_viruses_global
+		if host_specific:
+			select_func = self.select_viruses
+		else:
+			select_func = self.select_viruses_globalh
 
 		priority_viruses = self.viruses_by_date_region([v for v in self.viruses if v['strain'].upper() in prioritize])
 		other_viruses = self.viruses_by_date_region([v for v in self.viruses if v['strain'].upper() not in prioritize])
@@ -148,6 +162,7 @@ class virus_filter(object):
 		first_year = int(np.floor(self.time_interval[0]))
 		first_month = int((self.time_interval[0]-first_year)*12)
 		regions = list(set([v['region'] for v in self.viruses]))
+		hosts = list(set([v['host'] for v in self.viruses]))
 
 		print "Filtering between " + str(first_month) + "/" + str(first_year), "and today"
 		print "Selecting " + str(viruses_per_month), "viruses per month"
@@ -182,8 +197,20 @@ class virus_filter(object):
 			virus_tuples[(vdate.year, vdate.month, v['region'])].append(v)
 
 		return virus_tuples
+		
+	def viruses_by_date_host(self, tmp_viruses):
+		from collections import defaultdict
+		virus_tuples = defaultdict(list)
+		for v in tmp_viruses:
+			try:
+				vdate = datetime.datetime.strptime(v['data'], self.date_format['fields']).date()
+			except:
+				print "incomplete date!", v['strain'], v['date'], "adjexting to July 1st"
+				v['date']+='-07-01'
+				vdate = datetime.datetime.strptime(v['date'], '%Y-%m-%d').date()
+			virus_tuples[(vdate.year, vdate.month, v['host'])].append(v)
 
-	def select_viruses(self, priority_viruses,other_viruses, y, m, viruses_per_month, regions, all_priority = False):
+	def select_viruses(self, priority_viruses,other_viruses, y, m, viruses_per_month, regions, hosts, all_priority = False):
 		'''
 		select viruses_per_month strains as evenly as possible from all regions
 		'''
@@ -221,6 +248,18 @@ class virus_filter(object):
 		return sample(priority_viruses_flat, len(priority_viruses_flat) if all_priority else min(len(priority_viruses_flat), viruses_per_month))\
 				+ sample(other_viruses_flat, min(n_other, len(other_viruses_flat)))
 
+	def select_viruses_globalh(self, priority_viruses,other_viruses, y, m, viruses_per_month, hosts, all_priority = False):
+		from random import sample
+		priority_viruses_flat = []
+		for r in hosts: priority_viruses_flat.extend(priority_viruses[(y,m,r)])
+		other_viruses_flat = []
+		for r in hosts: other_viruses_flat.extend(other_viruses[(y,m,r)])
+		
+		if self.verbose>1:
+			print "\t\tfound",len(priority_viruses_flat)+len(other_viruses_flat), 'in year',y,'month',m
+		n_other = max(0,viruses_per_month-len(priority_viruses_flat))
+		return sample(priority_viruses_flat, len(priority_viruses_flat) if all_priority else min(len(priority_viruses_flat), viruses_per_month))\
+				+ sample(other_viruses_flat, min(n_other, len(other_viruses_flat)))
 
 class flu_filter(virus_filter):
 
@@ -238,6 +277,8 @@ class flu_filter(virus_filter):
 		self.filter_generic(prepend_strains = self.vaccine_strains)
 		self.filter_geo(prune=False)
 		print len(self.viruses), "with geographic information"
+		self.filter_host(prune=False)
+		print len(self.viruses), "with host information"
 
 	def add_older_vaccine_viruses(self, dt = 3, dtref = None):
 		'''
@@ -329,4 +370,33 @@ class flu_filter(virus_filter):
 		if prune:
 			self.viruses = filter(lambda v: v['region'] != 'Unknown', self.viruses)
 			
-		#def filter_host(self
+	def filter_host(self, prune = True):
+		reader = csv.DictReader(open("/Users/yujia_zhou/Documents/Work/H9_nextflu-master/augur/source-data/host.tsv"), delimiter='\t')
+		species_to_host = {}
+		for line in reader:
+			species_to_host[line['species'].lower()] = line['host']
+			#print species_to_host
+		for v in self.viruses:
+			#if "host" not in v:
+			v['host'] = 'Unknown'
+			try:
+				species = re.match(r'^[AB]/([^/]+)/([^/]+)/', v['strain']).group(1).lower()
+				if species in species_to_host:
+					v['host'] = species_to_host[species]
+				else:
+					species = re.match(r'^[AB]/([A-Z][a-z]+)[A-Z0-9]', v['strain']).group(1).lower()
+				if species in species_to_host:
+					v['host'] = species_to_host[species]
+				if v['host'] == 'Unknown':
+					print "couldn't parse species type for", v['strain']
+			except:
+				print "couldn't parse host type for", v['strain']
+					
+		if prune:
+			self.viruses = filter(lambda v:v['host'] != 'Unknown', self.viruses)
+						
+		hosts = list(set([v['host'] for v in self.viruses]))	
+						
+					
+						
+						
