@@ -1016,7 +1016,7 @@ def export_ref_strains(myflu):
 	strains = []
 	for r in myflu.ref_strains:
 		tmp = myflu.sequence_lookup[myflu.node_lookup[r].strain]
-		strains.append({'seq': str(tmp.seq), 'date': tmp.date, 'strain': tmp.strain, 'region': tmp.region, 'country':tmp.country})
+		strains.append({'seq': str(tmp.seq), 'date': tmp.date, 'strain': tmp.strain, 'region': tmp.region, 'host': tmp.host, 'country':tmp.country})
 	from json import dump as jdump
 	with open('/Users/yujia_zhou/Documents/Work/H9_nextflu-master/augur/source-data/'+ myflu.virus_type+'_ref_strains.json', 'w') as ofile:
 		jdump(strains, ofile, indent=2)
