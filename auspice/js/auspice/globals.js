@@ -2,9 +2,8 @@ var genericDomain = [0,0.111,0.222,0.333, 0.444, 0.555, 0.666, 0.777, 0.888, 1.0
 var path = '/data/';
 var tip_labels = true;
 
-var regions = ["Africa", "SouthAmerica", "NorthAsia", "Oceania", "MiddleEast", "Europe", "JapanKorea", "NorthAmerica", "SoutheastAsia", "SouthAsia", "China"]
-
-var hosts = ["Avian", "Swine", "Other_mammal", "Human"]
+var regions = ["Africa", "SouthAmerica",  "NorthAmerica", "CentralAmerica", "SoutheastAsia", "NorthAsia", "EastAsia", "SouthAsia", "China", "Oceania", "MiddleEast", "Europe", "Unknown"]
+//var hosts = ["Avian", "Swine", "Other_mammal", "Human"]
 
 var cladeToSeq = {}
 
@@ -12,7 +11,7 @@ if (typeof globalDate == 'undefined') {
     var globalDate = new Date();
 }
 
-var nodes, tips, rootNode, links, vaccines, sera;
+var nodes, tips, rootNode, links, vaccines, news, sera;
 
 var nDisplayTips, displayRoot;
 if (document.getElementById("gtspec") != null){
@@ -46,7 +45,7 @@ var epiColorDomain = genericDomain;
 var nonEpiColorDomain = genericDomain;
 var rbsColorDomain = genericDomain;
 var dateColorDomain = genericDomain;
-var hostColorDomain = genericDomain;
+//var hostColorDomain = genericDomain;
 var HIColorDomain = genericDomain.map(function(d){return Math.round(100*(d*3.6))/100;});
 var dfreqColorDomain = genericDomain.map(function(d){return Math.round(100*(0.2+d*1.8))/100;});
 var fitnessColorDomain = genericDomain.map(function(d){return Math.round(100*((d-0.5)*16.0))/100;});

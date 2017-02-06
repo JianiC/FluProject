@@ -88,6 +88,7 @@ function get_frequencies(region, gt){
 	return freq.map(function (d) {return Math.round(d*100)/100;});
 };
 
+
 var freqDataString = "";
 function make_gt_chart(gt){
 	var tmp_data = [];
@@ -122,6 +123,7 @@ function make_gt_chart(gt){
 		}
 	}
 }
+
 
 function addClade(d) {
 	if (typeof gt_chart != "undefined"){
@@ -202,6 +204,7 @@ var gt_chart = c3.generate({
 		columns: [],
 	}
 });
+
 
 function contains(arr, obj) {
     for(var i=0; i<arr.length; i++) {

@@ -107,6 +107,15 @@ function dragged(d) {
 			if (diffYears > 0) { return "visible"; }
 				else { return "hidden"; }
 			});
+		
+	treeplot.selectAll(".new")
+		.style("visibility", function(d) {
+			var date = new Date(d.choice);
+			var oneYear = 365.25*24*60*60*1000; // days*hours*minutes*seconds*milliseconds
+			var diffYears = (globalDate.getTime() - date.getTime()) / oneYear;
+			if (diffYears > 0) { return "visible"; }
+				else { return "hidden"; }
+			});
 
 }
 
@@ -134,6 +143,15 @@ function draggedMin(d) {
 //		.style("stroke", "#AAA");
 
 	treeplot.selectAll(".vaccine")
+		.style("visibility", function(d) {
+			var date = new Date(d.choice);
+			var oneYear = 365.25*24*60*60*1000; // days*hours*minutes*seconds*milliseconds
+			var diffYears = (globalDate.getTime() - date.getTime()) / oneYear;
+			if (diffYears > 0) { return "visible"; }
+				else { return "hidden"; }
+			});
+		
+	treeplot.selectAll(".new")
 		.style("visibility", function(d) {
 			var date = new Date(d.choice);
 			var oneYear = 365.25*24*60*60*1000; // days*hours*minutes*seconds*milliseconds
@@ -196,7 +214,7 @@ function dragend() {
 function date_init(){
 	nodes.forEach(function (d) {d.dateval = new Date(d.date)});
 	var dateValues = nodes.filter(function(d) {
-		return (typeof d.date === 'string')&(typeof vaccineChoice[d.strain]=="undefined")&(typeof reference_viruses[d.strain]=="undefined");
+		return (typeof d.date === 'string')&(typeof vaccineChoice[d.strain]=="undefined")&(typeof newChoice[d.strain]=="undefined")&(typeof reference_viruses[d.strain]=="undefined");
 		}).map(function(d) {
 		return new Date(d.date);
 	});

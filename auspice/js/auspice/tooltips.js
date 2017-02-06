@@ -39,6 +39,33 @@ var virusTooltip = d3.tip()
 			}
 		}
 		string += "</div>";
+		
+		// check if new strain
+		if (newStrains.indexOf(d.strain) != -1) {
+			string += "New strain<br>";
+			var new_date = new Date(newChoice[d.strain]);
+
+			string += "First chosen " + new_date.toLocaleString("en-us", { month: "short" }) + " " + new_date.getFullYear() + "<br>";
+			string += "<div class=\"smallspacer\"></div>";
+		}
+
+		if (typeof d.country != "undefined") {
+			string += d.country.replace(/([A-Z])/g, ' $1');
+		}
+		if (typeof d.date != "undefined") {
+			string += ", " + d.date;
+		}
+		if ((typeof d.db != "undefined") && (typeof d.accession != "undefined") && (d.db == "GISAID")) {
+			string += "<br>GISAID ID: EPI" + d.accession;
+		}
+		if (typeof d.lab != "undefined") {
+			if (d.lab != "") {
+				string += "<br>Source: " + d.lab.substring(0,25);
+				if (d.lab.length>25) string += '...';
+			}
+		}
+		string += "</div>";
+	
 		// following may or may not be present
 		if ((typeof focusNode != "undefined")){
 			string += "<div class=\"smallspacer\"></div>";

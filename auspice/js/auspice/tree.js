@@ -235,6 +235,7 @@ d3.json(path + file_prefix + "tree.json", function(error, root) {
 	displayRoot = rootNode;
 	tips = gatherTips(rootNode, []);
 	vaccines = getVaccines(tips);
+	news = getNews(tips);
 	sera = getSera(tips);
 
 	initDateColorDomain();
@@ -325,6 +326,23 @@ d3.json(path + file_prefix + "tree.json", function(error, root) {
 			virusTooltip.show(d, this);
 		})
 		.on('mouseout', virusTooltip.hide);
+
+	var newCircles = treeplot.selectAll(".new")
+		.data(news)
+		.enter()
+		.append("text")
+		.attr("class", "new")
+		.attr('text-anchor', 'middle')
+		.attr('dominant-baseline', 'central')
+		.style("font-size", "28px")
+		.style('font-family', 'FontAwesome')
+		.style("fill", "#FFD700")
+		.text(function(d) { return '\uf00d'; })
+		.style("cursor", "default")
+		.on('mouseover', function(d) {
+			virusTooltip.show(d, this);
+		})
+		.on('mouseout', virusTooltip.hide); 
 
 	var serumWidth = 10;
 	var serumCircles = treeplot.selectAll(".serum")
@@ -442,6 +460,11 @@ d3.json(path + file_prefix + "tree.json", function(error, root) {
 			.transition().duration(dt)
 			.attr("x", function(d) { return d.x; })
 			.attr("y", function(d) { return d.y; });
+			
+		treeplot.selectAll(".new")
+			.transition().duration(dt)
+			.attr("x", function(d) { return d.x; })
+			.attr("y", function(d) { return d.y; });
 
 		treeplot.selectAll(".serum").data(sera)
 			.transition().duration(dt)
@@ -489,6 +512,17 @@ d3.json(path + file_prefix + "tree.json", function(error, root) {
 					return yScale(d[2]) - 6;
 				});
 		}
+		/*
+		if (typeof clades !="undefined"){
+			treeplot.selectAll(".annotationh")
+				.transition().duration(dt)
+				.attr("x", function(d) {
+					return xScale(d[1]) - 10;
+				})
+				.attr("y", function(d) {
+					return yScale(d[2]) - 6;
+				});
+		}*/
 	}
 
 	function resize() {

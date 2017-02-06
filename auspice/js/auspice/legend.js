@@ -12,9 +12,9 @@ function makeLegend(){
 		if (colorBy == "date") {
 			return "Date";
 		}
-        if (colorBy == "host") {
-            return "Host";
-        }
+        //if (colorBy == "host") {
+            //return "Host";
+        //}
 		if (colorBy == "dfreq") {
 			var tmp_nmonth = Math.round(12*dfreq_dn*time_step);
 			var tmp_text = "Freq. change ("+tmp_nmonth+" month";

@@ -57,17 +57,17 @@ var dateColorScale = d3.scale.linear().clamp([true])
 	.domain(dateColorDomain)
 	.range(colors[10]);
 	
-var hostColorScale = d3.scale.ordinal()
+/*var hostColorScale = d3.scale.ordinal()
 	.domain(hosts.map(function(d){return d[0];}))
-	.range(hosts.map(function(d){return d[1];}));
+	.range(hosts.map(function(d){return d[1];}));*/
 	
 var regionColorScale = d3.scale.ordinal()
 	.domain(regions.map(function(d){return d[0];}))
 	.range(regions.map(function(d){return d[1];}));
 
-var hostColorScale = d3.scale.ordinal()
+/*var hostColorScale = d3.scale.ordinal()
 	.domain(hosts.map(function(d){return d[0];}))
-	.range(hosts.map(function(d){return d[1];}));
+	.range(hosts.map(function(d){return d[1];}));*/
 
 var fitnessColorScale = d3.scale.linear().clamp([true])
 	.domain(fitnessColorDomain)
@@ -143,10 +143,10 @@ function colorByTrait() {
 		colorScale = dateColorScale;
 		nodes.map(function(d) { d.coloring = d.num_date; });
 	}
-	else if (colorBy == "host") {
-		colorScale = hostColorScale;
-		nodes.map(function(d) { d.coloring = d.host; });
-	}
+	//else if (colorBy == "host") {
+		//colorScale = hostColorScale;
+		//nodes.map(function(d) { d.coloring = d.host; });
+	//}
 	else if (colorBy == "fitness") {
 		colorScale = fitnessColorScale;
 		nodes.map(function(d) { d.coloring = d.fitness; });
@@ -193,21 +193,21 @@ function branchStrokeColor(d) {
 	return d3.rgb(modCol).toString();
 }
 
-function branchStrokeColor(d) {
-	var col;
-	if (colorBy == "host" || colorBy == "date") {
-		col = "#AAA";
-	}
-	else {
-		if (typeof d.target.coloring != "undefined"){
-			col = colorScale(d.target.coloring);
-		}else{
-			col="#AAA";
-		}
-	}
-	var modCol = d3.interpolateRgb(col, "#BBB")(0.6);
-	return d3.rgb(modCol).toString();
-}
+//function branchStrokeColor(d) {
+//	var col;
+//	if (colorBy == "host" || colorBy == "date") {
+//		col = "#AAA";
+//	}
+//	else {
+//		if (typeof d.target.coloring != "undefined"){
+//			col = colorScale(d.target.coloring);
+//		}else{
+//			col="#AAA";
+//		}
+//	}
+//	var modCol = d3.interpolateRgb(col, "#BBB")(0.6);
+//	return d3.rgb(modCol).toString();
+//}
 
 function contains(arr, obj) {
     for(var i=0; i<arr.length; i++) {

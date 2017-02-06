@@ -12,6 +12,18 @@ function gatherTips(node, tips) {
 	return tips;
 }
 
+function gatherTipsn(node, tipsn) {
+	if (typeof node.children != "undefined") {
+		for (var i=0, c=node.children.length; i<c; i++) {
+			gatherTipsn(node.children[i], tipsn);
+		}
+	}
+	else {
+		tipsn.push(node);
+	}
+	return tipsn;
+}
+
 function getVaccines(tips) {
 	vaccines = [];
 	tips.forEach(function (tip) {
@@ -21,6 +33,17 @@ function getVaccines(tips) {
 		}
 	})
 	return vaccines;
+}
+
+function getNews(tips) {
+	news = [];
+	tips.forEach(function (tip) {
+		if (newStrains.indexOf(tip.strain) != -1) {
+			tip.choice = newChoice[tip.strain];
+			news.push(tip);
+		}
+	})
+	return news;
 }
 
 function minimumAttribute(node, attr, min) {
