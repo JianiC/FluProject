@@ -1,0 +1,20 @@
+[{	
+"label":"Region", 
+"id":"region", 
+"fields": 
+[["all", "all"],
+["Africa", "Africa"],
+["NorthAmerica", "North America"],
+["CentralAmerica", "Central America"],
+["SouthAmerica", "South America"],
+["Oceania", "Oceania"],
+["Europe", "Europe"],
+["China", "China"],
+["EastAsia", "East Asia"],
+["SouthAsia", "South Asia"],
+["SoutheastAsia", "Southeast Asia"],
+["NorthAsia", "North Asia"],
+["MiddleEast", "Middle East"],
+["Unknown", "Unknown"],
+],
+}]
