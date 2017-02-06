@@ -16,7 +16,7 @@ def myopen(fname, mode='r'):
 		return open(fname, mode)
 
 def fix_name(name):
-	tmp_name = name.replace(' ', '').replace('\'','').replace('(','').replace(')','').replace('H9','').replace('Human','').replace('human','').replace('//','/')
+	tmp_name = name.replace(' ', '').replace('\'','').replace('(','').replace(')','').replace('H9','').replace('//','/')
 	fields = tmp_name.split('/')
 	if len(fields[-1])==2:
 		try:
@@ -47,6 +47,7 @@ class virus_filter(object):
 		self.alignment_file = alignment_file
 		self.viruses = self.parse_fasta(self.alignment_file)
 		self.strain_lookup = {}
+		self.strain_lookupn = {}
 		self.outgroup = None
 		self.date_spec = date_spec
 
@@ -68,6 +69,7 @@ class virus_filter(object):
 
 	def filter(self):
 		self.filter_generic()
+		self.filter_genericn()
 
 	def filter_generic(self, prepend_strains = None):
 		'''
@@ -89,6 +91,24 @@ class virus_filter(object):
 			print len(self.viruses), "after adding custom strains"
 		self.filter_unique()
 		print len(self.viruses), "after filtering for unique strains"
+		
+	def filter_genericn(self, prependn_strains = None):
+		
+		print len(self.viruses), "initial viruses"
+		if hasattr(self, 'min_length'):
+			self.filter_length(self.min_length)
+			print len(self.viruses), "after filtering by length >=", self.min_length
+		#self.filter_noncanoncial_nucleotides()
+		#print len(self.viruses), "after filtering bad nucleotides"
+
+		self.filter_date()
+		print len(self.viruses), "after filtering for precise dates"
+		self.sort_length()
+		if prependn_strains is not None:
+			self.viruses = prependn_strains + self.viruses
+			print len(self.viruses), "after adding custom strains"
+		self.filter_uniquen()
+		print len(self.viruses), "after filtering for unique strains"
 
 	def sort_length(self):
 		'''
@@ -109,6 +129,16 @@ class virus_filter(object):
 				filtered_viruses.append(v)
 				self.strain_lookup[label]=v
 		self.viruses=filtered_viruses
+		
+	def filter_uniquen(self):
+		
+		filtered_virusesn = []
+		for v in self.viruses:
+			label = v['strain'].upper()
+			if not label in self.strain_lookupn:
+				filtered_virusesn.append(v)
+				self.strain_lookupn[label]=v
+		self.viruses=filtered_virusesn
 
 	def filter_length(self, min_length):
 		self.viruses = filter(lambda v: len(v['seq']) >= min_length, self.viruses)
@@ -135,7 +165,7 @@ class virus_filter(object):
 					v['date'] = v['date'][:4]+'-'+format(np.random.randint(12)+1, '02d')+'-01'
 	'''
 
-	def subsample(self, viruses_per_month, prioritize = None, all_priority=False, region_specific = True, host_specific = True):
+	def subsample(self, viruses_per_month, prioritize = None, all_priority=False, region_specific = True):
 		'''
 		Subsample x viruses per month
 		Take from beginning of list - this will prefer longer sequences
@@ -150,10 +180,10 @@ class virus_filter(object):
 			select_func = self.select_viruses
 		else:
 			select_func = self.select_viruses_global
-		if host_specific:
-			select_func = self.select_viruses
-		else:
-			select_func = self.select_viruses_globalh
+		#if host_specific:
+			#select_func = self.select_viruses
+		#else:
+			#select_func = self.select_viruses_globalh
 
 		priority_viruses = self.viruses_by_date_region([v for v in self.viruses if v['strain'].upper() in prioritize])
 		other_viruses = self.viruses_by_date_region([v for v in self.viruses if v['strain'].upper() not in prioritize])
@@ -162,7 +192,7 @@ class virus_filter(object):
 		first_year = int(np.floor(self.time_interval[0]))
 		first_month = int((self.time_interval[0]-first_year)*12)
 		regions = list(set([v['region'] for v in self.viruses]))
-		hosts = list(set([v['host'] for v in self.viruses]))
+		#hosts = list(set([v['host'] for v in self.viruses]))
 
 		print "Filtering between " + str(first_month) + "/" + str(first_year), "and today"
 		print "Selecting " + str(viruses_per_month), "viruses per month"
@@ -198,7 +228,7 @@ class virus_filter(object):
 
 		return virus_tuples
 		
-	def viruses_by_date_host(self, tmp_viruses):
+	'''def viruses_by_date_host(self, tmp_viruses):
 		from collections import defaultdict
 		virus_tuples = defaultdict(list)
 		for v in tmp_viruses:
@@ -208,9 +238,9 @@ class virus_filter(object):
 				print "incomplete date!", v['strain'], v['date'], "adjexting to July 1st"
 				v['date']+='-07-01'
 				vdate = datetime.datetime.strptime(v['date'], '%Y-%m-%d').date()
-			virus_tuples[(vdate.year, vdate.month, v['host'])].append(v)
+			virus_tuples[(vdate.year, vdate.month, v['host'])].append(v)'''
 
-	def select_viruses(self, priority_viruses,other_viruses, y, m, viruses_per_month, regions, hosts, all_priority = False):
+	def select_viruses(self, priority_viruses,other_viruses, y, m, viruses_per_month, regions, all_priority = False):
 		'''
 		select viruses_per_month strains as evenly as possible from all regions
 		'''
@@ -248,7 +278,7 @@ class virus_filter(object):
 		return sample(priority_viruses_flat, len(priority_viruses_flat) if all_priority else min(len(priority_viruses_flat), viruses_per_month))\
 				+ sample(other_viruses_flat, min(n_other, len(other_viruses_flat)))
 
-	def select_viruses_globalh(self, priority_viruses,other_viruses, y, m, viruses_per_month, hosts, all_priority = False):
+	'''def select_viruses_globalh(self, priority_viruses,other_viruses, y, m, viruses_per_month, hosts, all_priority = False):
 		from random import sample
 		priority_viruses_flat = []
 		for r in hosts: priority_viruses_flat.extend(priority_viruses[(y,m,r)])
@@ -259,7 +289,7 @@ class virus_filter(object):
 			print "\t\tfound",len(priority_viruses_flat)+len(other_viruses_flat), 'in year',y,'month',m
 		n_other = max(0,viruses_per_month-len(priority_viruses_flat))
 		return sample(priority_viruses_flat, len(priority_viruses_flat) if all_priority else min(len(priority_viruses_flat), viruses_per_month))\
-				+ sample(other_viruses_flat, min(n_other, len(other_viruses_flat)))
+				+ sample(other_viruses_flat, min(n_other, len(other_viruses_flat)))'''
 
 class flu_filter(virus_filter):
 
@@ -268,17 +298,19 @@ class flu_filter(virus_filter):
 		self.add_gisaid_metadata()
 		self.fix_strain_names()
 		self.vaccine_strains=[]
+		self.new_strains=[]
 
 	def filter(self):
 		self.filter_strain_names()
 		print len(self.viruses), "with proper strain names"
-		self.filter_passage()
-		print len(self.viruses), "without egg passage"
+		#self.filter_passage()
+		#print len(self.viruses), "without egg passage"
 		self.filter_generic(prepend_strains = self.vaccine_strains)
+		self.filter_genericn(prependn_strains = self.new_strains)
 		self.filter_geo(prune=False)
 		print len(self.viruses), "with geographic information"
-		self.filter_host(prune=False)
-		print len(self.viruses), "with host information"
+		#self.filter_host(prune=False)
+		#print len(self.viruses), "with host information"
 
 	def add_older_vaccine_viruses(self, dt = 3, dtref = None):
 		'''
@@ -298,7 +330,7 @@ class flu_filter(virus_filter):
 			if dtref==None:
 				dtref=dt*0.5
 			from json import load as jload
-			with open('/Users/yujia_zhou/Documents/Work/H9_nextflu-master/augur/source-data/'+self.virus_type+'_ref_strains.json', 'r') as infile:
+			with open('/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/augur/source-data/'+self.virus_type+'_ref_strains.json', 'r') as infile:
 				self.reference_viruses = jload(infile)
 			for v in self.reference_viruses:
 				if v['strain'] not in [x['strain'] for x in self.viruses]:
@@ -313,13 +345,46 @@ class flu_filter(virus_filter):
 							print("skipping ",v['strain'], v['date'], tmp_date, self.time_interval)
 		except:
 			print("can't find reference_viruses")
-
+			
+	def add_older_new_viruses(self, dt = 3, dtref = None):
+		
+		from date_util import numerical_date
+		for v in self.new_strains:
+			if v['strain'] not in [x['strain'] for x in self.viruses]:
+				tmp_date = numerical_date(v['date'])
+				if tmp_date<self.time_interval[0] and tmp_date>=self.time_interval[0]-dt:
+					self.viruses.append(v)
+					print("adding ",v['strain'], v['date'], tmp_date, self.time_interval)
+				else:
+					print("skipping ",v['strain'], v['date'], tmp_date, self.time_interval)
+		new_strain_names = [v['strain'] for v in self.new_strains]
+		try:
+			if dtref==None:
+				dtref=dt*0.5
+			from json import load as jload
+			with open('/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/augur/source-data/'+self.virus_type+'_ref_strains.json', 'r') as infile:
+				self.reference_viruses = jload(infile)
+			for v in self.reference_viruses:
+				if v['strain'] not in [x['strain'] for x in self.viruses]:
+					tmp_date = numerical_date(v['date'])
+					tmp_strain = v['strain']
+					print(tmp_strain)
+					if tmp_strain not in new_strain_names:
+						if tmp_date<self.time_interval[0] and tmp_date>=self.time_interval[0]-dtref:
+							self.viruses.append(v)
+							print("adding ",v['strain'], v['date'], tmp_date, self.time_interval)
+						else:
+							print("skipping ",v['strain'], v['date'], tmp_date, self.time_interval)
+		except:
+			print("can't find reference_viruses")
+			
 	def add_gisaid_metadata(self):
 		for v in self.viruses:
 			v['db']="GISAID"
 
 	def filter_strain_names(self):
 		self.viruses = filter(lambda v: re.match(r'^[AB]/', v['strain']) != None, self.viruses)
+		#print "viruses: ", self.viruses
 
 	def fix_strain_names(self):
 		for v in self.viruses:
@@ -332,7 +397,7 @@ class flu_filter(virus_filter):
 	def filter_geo(self, prune = True):
 		"""Label viruses with geographic location based on strain name"""
 		"""Location is to the level of country of administrative division when available"""
-		reader = csv.DictReader(open("/Users/yujia_zhou/Documents/Work/H9_nextflu-master/augur/source-data/geo_synonyms.tsv"), delimiter='\t')		# list of dicts
+		reader = csv.DictReader(open("/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/augur/source-data/geo_synonyms.tsv"), delimiter='\t')		# list of dicts
 		label_to_country = {}
 		for line in reader:
 			label_to_country[line['label'].lower()] = line['country']
@@ -356,7 +421,7 @@ class flu_filter(virus_filter):
 				except:
 					print "couldn't parse location for", v['strain']
 
-		reader = csv.DictReader(open("/Users/yujia_zhou/Documents/Work/H9_nextflu-master/augur/source-data/geo_regions.tsv"), delimiter='\t')		# list of dicts
+		reader = csv.DictReader(open("/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/augur/source-data/geo_regions.tsv"), delimiter='\t')		# list of dicts
 		country_to_region = {}
 		for line in reader:
 			country_to_region[line['country']] = line['region']
@@ -369,9 +434,9 @@ class flu_filter(virus_filter):
 
 		if prune:
 			self.viruses = filter(lambda v: v['region'] != 'Unknown', self.viruses)
-			
+'''			
 	def filter_host(self, prune = True):
-		reader = csv.DictReader(open("/Users/yujia_zhou/Documents/Work/H9_nextflu-master/augur/source-data/host.tsv"), delimiter='\t')
+		reader = csv.DictReader(open("/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/augur/source-data/host.tsv"), delimiter='\t')
 		species_to_host = {}
 		for line in reader:
 			species_to_host[line['species'].lower()] = line['host']
@@ -396,7 +461,7 @@ class flu_filter(virus_filter):
 			self.viruses = filter(lambda v:v['host'] != 'Unknown', self.viruses)
 						
 		hosts = list(set([v['host'] for v in self.viruses]))	
-						
+'''						
 					
 						
 						

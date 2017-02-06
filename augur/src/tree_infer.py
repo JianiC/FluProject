@@ -9,7 +9,7 @@ from io_util import *
 from tree_util import delimit_newick
 
 def cleanup():
-	for file in glob.glob("RAxML_*") + glob.glob("/Users/yujia_zhou/Documents/Work/H9_nextflu-master/temp*") + ["raxml_tree.newick", "initial_tree.newick"]:
+	for file in glob.glob("RAxML_*") + glob.glob("temp*") + ["raxml_tree.newick", "initial_tree.newick"]:
 		try:
 			os.remove(file)
 		except OSError:
@@ -22,7 +22,7 @@ def main(viruses, raxml_time_limit, outgroup):
 	cleanup()
 	write_fasta(viruses, 'temp.fasta')
 	print "Building initial tree with FastTree"
-	os.system("fasttree -gtr -nt -gamma -nosupport -mlacc 2 -slownni temp.fasta > initial_tree.newick")
+	os.system("./fasttree -gtr -nt -gamma -nosupport -mlacc 2 -slownni temp.fasta > initial_tree.newick")
 	delimit_newick("initial_tree.newick", "temp.newick")
 	tree = dendropy.Tree.get_from_path("temp.newick", "newick")
 	tree.resolve_polytomies()
@@ -54,7 +54,7 @@ def main(viruses, raxml_time_limit, outgroup):
 	print "RAxML branch length optimization and rooting"
 	os.system("raxml -f e -T 6 -s temp.phyx -n branches -c 25 -m GTRGAMMA -p 344312987 -t raxml_tree.newick -o " + outgroup)
 
-	out_fname = "tree_infer.newick"
+	out_fname = "data/tree_infer.newick"
 	os.rename('RAxML_result.branches', out_fname)
 	cleanup()	
 	return out_fname;

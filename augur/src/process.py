@@ -1,5 +1,5 @@
 import sys, time, os, argparse,shutil,subprocess, glob
-sys.path.append('/Users/yujia_zhou/Documents/Work/H9_nextflu-master/augur/src')
+sys.path.append('/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/augur/src/')
 sys.setrecursionlimit(10000)  # needed since we are dealing with large trees
 from Bio import SeqIO, AlignIO,Phylo
 from Bio.SeqRecord import SeqRecord
@@ -18,7 +18,7 @@ parser.add_argument('--lam_HI', type = float, default = 1.0, help='regularizatio
 parser.add_argument('--lam_avi', type = float, default = 1.0, help='regularization for avidity')
 parser.add_argument('--lam_pot', type = float, default = 0.2, help='regularization for potency')
 parser.add_argument('--interval', nargs = '+', type = float, default = None, help='interval from which to pull sequences')
-parser.add_argument('--path', type = str, default = '/Users/yujia_zhou/Documents/Work/H9_nextflu-master/augur/src/data/', help='path of file dumps')
+parser.add_argument('--path', type = str, default = '/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/augur/src/data/', help='path of file dumps')
 parser.add_argument('--prefix', type = str, default = '', help='prefix of file dumps including auspice')
 parser.add_argument('--test', default = False, action="store_true",  help ="don't run the pipeline")
 parser.add_argument('--start', default = 'filter', type = str,  help ="start pipeline at specified step")
@@ -32,11 +32,11 @@ parser.add_argument('--estimate_fitness_model', default = False, action="store_t
 
 virus_config = {
 	'date_format':{'fields':'%Y-%m-%d', 'reg':r'\d\d\d\d-\d\d-\d\d'},
-	'fasta_fields':{0:'strain', 1:'isolate_id', 3:'passage', 5:'date', 7:'lab', 8:"accession", 9:"species"},
+	'fasta_fields':{0:'strain', 1:'isolate_id', 3:'passage', 5:'date', 7:'lab', 8:"accession"},
 	# frequency estimation parameters
 	'aggregate_regions': [  ("global", None), ("NA", ["NorthAmerica"]), ("EU", ["Europe"]),
-							("AS", ["China", "SoutheastAsia", "JapanKorea"]), ("OC", ["Oceania"]) ],
-	'aggregate_hosts': [  ("globalh", None), ("A", ["Avian"]), ("S", ["Swine"]), ("O", ["Other mammal"]), ("H", ["Human"]) ],
+							("AS", ["China", "SoutheastAsia", "EastAsia"]), ("OC", ["Oceania"]) ],
+	#'aggregate_hosts': [  ("globalh", None), ("A", ["Avian"]), ("S", ["Swine"]), ("O", ["Other mammal"]), ("H", ["Human"]) ],
 	'frequency_stiffness':10.0,
 	'verbose':2,
 	'tol':2e-4, #tolerance for frequency optimization
@@ -51,7 +51,7 @@ virus_config = {
 
 class process(virus_frequencies):
 	"""generic template class for processing virus sequences into trees"""
-	def __init__(self, path = '/Users/yujia_zhou/Documents/Work/H9_nextflu-master/augur/src/data/', prefix = 'virus', time_interval = (2012.0, 2015.0),
+	def __init__(self, path = '/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/augur/src/data/', prefix = 'virus', time_interval = (2012.0, 2015.0),
 	             run_dir = None, virus = None, resolution = None, date_format={'fields':'%Y-%m-%d', 'reg':r'\d\d\d\d-\d\d-\d\d'},
 				 min_mutation_frequency = 0.01, min_genotype_frequency = 0.1, **kwargs):
 		self.path = path
@@ -76,18 +76,17 @@ class process(virus_frequencies):
 		if run_dir is None:
 			import random
 			self.run_dir = '_'.join(['temp', time.strftime('%Y%m%d-%H%M%S',time.gmtime()), str(random.randint(0,1000000))])
-			# create temp_20160204-144532_149423 (Why remove after created?)
 		else:
 			self.run_dir = run_dir
 		self.run_dir = self.run_dir.rstrip('/')+'/'
-		self.auspice_tree_fname = 		'/Users/yujia_zhou/Documents/Work/H9_nextflu-master/auspice/data/' + self.prefix + self.resolution_prefix + 'tree.json'
-		self.auspice_sequences_fname = 	'/Users/yujia_zhou/Documents/Work/H9_nextflu-master/auspice/data/' + self.prefix + self.resolution_prefix + 'sequences.json'
-		self.auspice_frequency_fname = 	'/Users/yujia_zhou/Documents/Work/H9_nextflu-master/auspice/data/' + self.prefix + self.resolution_prefix + 'frequencies.json'
-		self.auspice_meta_fname = 		'/Users/yujia_zhou/Documents/Work/H9_nextflu-master/auspice/data/' + self.prefix + self.resolution_prefix + 'meta.json'
-		self.auspice_HI_fname = 		'/Users/yujia_zhou/Documents/Work/H9_nextflu-master/auspice/data/' + self.prefix + self.resolution_prefix + 'HI.json'
-		self.accession_fname = 		'/Users/yujia_zhou/Documents/Work/H9_nextflu-master/auspice/data/' + self.prefix + self.resolution_prefix + 'accession_numbers.tsv'
-		self.species_fname = 		'/Users/yujia_zhou/Documents/Work/H9_nextflu-master/auspice/data/' + self.prefix + self.resolution_prefix + 'species.tsv'
-		self.auspice_HI_display_mutations =	 '/Users/yujia_zhou/Documents/Work/H9_nextflu-master/auspice/auspice/_data/HI_mutation_effects.json'
+		self.auspice_tree_fname = 		'/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/auspice/data/' + self.prefix + self.resolution_prefix + 'tree.json'
+		self.auspice_sequences_fname = 	'/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/auspice/data/' + self.prefix + self.resolution_prefix + 'sequences.json'
+		self.auspice_frequency_fname = 	'/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/auspice/data/' + self.prefix + self.resolution_prefix + 'frequencies.json'
+		self.auspice_meta_fname = 		'/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/auspice/data/' + self.prefix + self.resolution_prefix + 'meta.json'
+		self.auspice_HI_fname = 		'/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/auspice/data/' + self.prefix + self.resolution_prefix + 'HI.json'
+		self.accession_fname = 		'/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/auspice/data/' + self.prefix + self.resolution_prefix + 'accession_numbers.tsv'
+		self.species_fname = 		'/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/auspice/data/' + self.prefix + self.resolution_prefix + 'species.tsv'
+		self.auspice_HI_display_mutations =	 '/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/auspice/auspice/_data/HI_mutation_effects.json'
 		self.nuc_alphabet = 'ACGT-N'
 		self.aa_alphabet = 'ACDEFGHIKLMNPQRSTVWY*X'
 		virus_frequencies.__init__(self, **kwargs)
@@ -118,12 +117,18 @@ class process(virus_frequencies):
 		if hasattr(self, 'aa_aln'):
 			with open(self.aa_seq_fname, 'w') as outfile:
 				cPickle.dump(self.aa_aln, outfile)
+		'''if hasattr(self, 'aa_alnh'):
+			with open(self.aa_seq_fname, 'w') as outfile:
+				cPickle.dump(self.aa_aln, outfile)'''
 		if hasattr(self, 'nuc_aln'):
 			with open(self.nuc_seq_fname, 'w') as outfile:
 				cPickle.dump(self.nuc_aln, outfile)
+		'''if hasattr(self, 'nuc_alnh'):
+			with open(self.nuc_seq_fname, 'w') as outfile:
+				cPickle.dump(self.nuc_alnh, outfile)'''
 		if hasattr(self, 'mutation_effects'):
 			with open(self.HI_model_fname, 'w') as outfile:
-				cPickle.dump((self.sera, self.ref_strains, self.HI_strains, self.mutation_effects, self.virus_effect, self.serum_potency), outfile)
+				cPickle.dump((self.ref_strains, self.mutation_effects, self.virus_effect), outfile)
 
 	def load(self):
 		import cPickle
@@ -143,6 +148,9 @@ class process(virus_frequencies):
 		if os.path.isfile(self.aa_seq_fname):
 			with open(self.aa_seq_fname, 'r') as infile:
 				self.aa_aln = cPickle.load(infile)
+		if os.path.isfile(self.aa_seq_fname):
+			with open(self.aa_seq_fname, 'r') as infile:
+				self.aa_alnh = cPickle.load(infile)
 		if os.path.isfile(self.nuc_seq_fname):
 			with open(self.nuc_seq_fname, 'r') as infile:
 				self.nuc_aln = cPickle.load(infile)
@@ -157,7 +165,7 @@ class process(virus_frequencies):
 		except:
 			pass
 
-	def export_to_auspice(self, tree_fields = [], tree_pop_list = [], annotations = [], annotationsh = [], seq='aa'):
+	def export_to_auspice(self, tree_fields = [], tree_pop_list = [], annotations = [], seq='aa'):
 		from tree_util import dendropy_to_json, all_descendants
 		from io_util import write_json, read_json
 		print "--- Streamline at " + time.strftime("%H:%M:%S") + " ---"
@@ -191,37 +199,48 @@ class process(virus_frequencies):
 						node["freq"][reg] = [round(x,3) for x in node["freq"][reg]]
 					except:
 						node["freq"][reg] = "undefined"
-				for hos in node["freq"]:
-					try:
-						node["freq"][hos] = [round(x,3) for x in node["freq"][hos]]
-					except:
-						node["freq"][hos] = "undefined"
+				#for hos in node["freq"]:
+					#try:
+						#node["freq"][hos] = [round(x,3) for x in node["freq"][hos]]
+					#except:
+						#node["freq"][hos] = "undefined"
 
-		'''if hasattr(self,"clade_designations"):
+		if hasattr(self,"clade_designations"):
 			# find basal node of clade and assign clade x and y values based on this basal node
 			clade_present = {}
 			clade_xval = {}
 			clade_yval = {}
-			self.frequencies['clades'] = {reg:{"pivots":list(self.tree.seed_node.pivots)}
+			if hasattr(self.tree.seed_node, "freq"):
+				self.frequencies['clades'] = {reg:{"pivots":list(self.tree.seed_node.pivots)}
 											for reg in self.tree.seed_node.freq}
-
+											
 			for clade, gt in self.clade_designations.iteritems():
+				#print "gt", gt
 				if clade in annotations:
 					print "Annotating clade", clade
+					#print node.aa_seq
+					#for node in self.tree.postorder_node_iter():
+						#for gene, pos, aa in gt:
+							#print gene, pos, aa
+					#for pos in gt:
+						#print node.aa_seq[pos]-1
+					#for aa in gt:
+						#print aa
 					tmp_nodes = sorted((node for node in self.tree.postorder_node_iter()
-						if not node.is_leaf() and all([node.aa_seq[gene][pos-1]==aa for gene, pos, aa in gt])),
-						key=lambda node: node.xvalue)
+						if not node.is_leaf() and all([node.aa_seq[gene][pos-1]==aa for gene, pos, aa in gt])), key=lambda node: node.xvalue)
+					#print tmp_nodes
 					if len(tmp_nodes):
 						clade_present[clade] = True
 						base_node = tmp_nodes[0]
 						clade_xval[clade] = base_node.xvalue
 						clade_yval[clade] = base_node.yvalue
-						for region in base_node.freq:
-							try:
-								self.frequencies["clades"][region][clade.lower()] = [round(x,3) for x in base_node.freq[region]]
-								print "added frequencies",region, clade
-							except:
-								print base_node.freq[region]
+						if hasattr(base_node, 'freq'):
+							for region in base_node.freq:
+								try:
+									self.frequencies["clades"][region][clade.lower()] = [round(x,3) for x in base_node.freq[region]]
+									print "added frequencies",region, clade
+								except:
+									print base_node.freq[region]
 					else:
 						clade_present[clade] = False
 						print "clade",clade, gt, "not in tree"
@@ -229,7 +248,7 @@ class process(virus_frequencies):
 			self.tree_json["clade_annotations"] = [(clade, clade_xval[clade],clade_yval[clade],
 								"/".join([gene+':'+str(pos)+aa for gene, pos, aa in gt]))
 							for clade, gt in self.clade_designations.iteritems()
-							if clade in annotations and clade_present[clade] == True]'''
+							if clade in annotations and clade_present[clade] == True]
 		write_json(self.tree_json, self.auspice_tree_fname, indent=None)
 		try:
 			read_json(self.auspice_tree_fname)
@@ -274,18 +293,82 @@ class process(virus_frequencies):
 			meta["regions"] = self.regions
 			meta["virus_stats"] = [ [str(y)+'-'+str(m)] + [self.date_region_count[(y,m)][reg] for reg in self.regions]
 															for y,m in sorted(self.date_region_count.keys()) ]
-		write_json(meta, self.auspice_meta_fname, indent=0)
+		write_json(meta, self.auspice_meta_fname, indent=None)
 		self.export_accession_numbers()
 		
-		if hasattr(self,"date_host_count"):
+		'''if hasattr(self,"date_host_count"):
 			meta["hosts"] = self.hosts 
 			meta["virus_states"] = [ [str(y)+'-'+str(m)] + [self.date_host_count[(y,m)][hos] for hos in self.hosts]
 															for y,m in sorted(self.date_host_count.keys()) ]
 		write_json(meta, self.auspice_meta_fname, indent=0)
-		self.export_accession_numbers()
+		self.export_accession_numbers()'''
+		
+	#zika related
+	'''def export_fasta_alignment(self):
+		print "Writing alignment"	
+		try:
+			handle = open(self.auspice_align_fname, 'w')
+		except IOError:
+			pass
+		else:
+			for node in self.tree:
+				if node.is_leaf():
+					if hasattr(node, 'strain') and hasattr(node, 'accession') and hasattr(node, 'date'):
+						handle.write(">" + node.strain + "|" + node.accession + "|" + node.date + "|" + node.region + "\n")
+						handle.write(node.seq + "\n")
+					else:
+						print node.strain + " is missing metadata"
+			handle.close()'''
+
+	#zika related
+	'''def export_newick_tree(self):
+		print "Writing newick tree"
+		try:
+			handle = open(self.auspice_newick_fname, 'w')
+		except IOError:
+			pass
+		else:
+			tmp_tree = self.tree
+			for node in tmp_tree:
+				if node.is_leaf():
+					if hasattr(node, 'strain') and hasattr(node, 'accession') and hasattr(node, 'date'):
+						node.taxon.label = node.strain + "|" + node.accession + "|" + node.date + "|" + node.region
+					else:
+						print node.strain + " is missing metadata"
+			newick_string = tmp_tree.as_string('newick')
+			handle.write(newick_string)
+			handle.close()
+			for node in tmp_tree:
+				if node.is_leaf():
+					if hasattr(node, 'strain'):
+						node.taxon.label = node.strain'''
+
+	def export_clade_frequencies(self):
+		print "Writing clade frequencies"
+		with open(self.auspice_clade_frequencies_fname, 'w') as ofile:
+			nodes = [node for node in self.tree]
+			if hasattr(nodes[0], 'pivots'):
+				pivots = nodes[0].pivots
+				string = "\t".join(map(str, pivots))
+				ofile.write(string + "\n")
+			for node in nodes:
+				if hasattr(node, 'freq'):
+					freqs = node.freq['global']
+					string = "\t".join(map(str, freqs))
+					ofile.write(string + "\n")
+		ofile.close()
+
+	def export_viruses(self):
+		print "Writing virus list"
+		with open(self.auspice_viruses_fname, 'w') as ofile:	
+			ofile.write("strain\tdate\tcountry\tregion\tep\tcHI\n")
+			for node in self.tree.postorder_node_iter():
+				if node.is_leaf():
+					ofile.write( str(node.strain) + "\t" + str(node.date) + "\t" + str(node.country) + "\t" + str(node.region) + "\t" + str(node.ep) + "\t" + str(node.cHI) + "\n" )
+		ofile.close()
 
 	def htmlpath(self):
-		htmlpath = '/Users/yujia_zhou/Documents/Work/H9_nextflu-master/auspice/'
+		htmlpath = '/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/auspice/'
 		if self.virus_type is not None:
 			htmlpath+=self.virus_type+'/'
 		if self.resolution is not None:
@@ -297,9 +380,9 @@ class process(virus_frequencies):
 		if "layout" in self.kwargs:
 			tmp_layout=self.kwargs["layout"]
 		else:
-			tmp_layout="/Users/yujia_zhou/Documents/Work/H9_nextflu-master/auspice"
+			tmp_layout="/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/auspice/"
 		with open(self.htmlpath()+'index.html','w') as out:
-			out.write("---\ntitle: nextflu / "+self.virus_type+" / "+self.resolution_prefix.rstrip('_')
+			out.write("---\ntitle: nextaiv / "+self.virus_type+" / "+self.resolution_prefix.rstrip('_')
 					  +"\nlayout: "+tmp_layout
 					  +"\nvirus: "+self.virus_type+"\nresolution: "+self.resolution_prefix.rstrip('_')+"\n")
 			if "html_vars"  in self.kwargs:
@@ -386,7 +469,7 @@ class process(virus_frequencies):
 		AlignIO.write(self.viruses, 'temp.fasta', 'fasta')
 
 		print "Building initial tree with FastTree"
-		os.system("fasttree -gtr -nt -gamma -nosupport -mlacc 2 -slownni temp.fasta > initial_tree.newick")
+		os.system("/Users/yujiazhou/Documents/nextflu/fasttree -gtr -nt -gamma -nosupport -mlacc 2 -slownni temp.fasta > initial_tree.newick")
 		self.tree = dendropy.Tree.get_from_string(delimit_newick('initial_tree.newick'),'newick', rooting='force-rooted')
 		self.tree.resolve_polytomies()
 		self.tree.write_to_path("initial_tree.newick", "newick")
@@ -396,7 +479,7 @@ class process(virus_frequencies):
 			print "RAxML tree optimization with time limit " + str(raxml_time_limit) + " hours"
 			# using exec to be able to kill process
 			end_time = time.time() + int(raxml_time_limit*3600)
-			process = subprocess.Popen("exec /Users/yujia_zhou/Documents/Work/Raxml/raxmlHPC-AVX-v8/raxml -f d -T 6 -j -s temp.phyx -n topology -c 25 -m GTRCAT -p 344312987 -t initial_tree.newick", shell=True)
+			process = subprocess.Popen("exec /Users/yujiazhou/Documents/nextflu/raxmlHPC-AVX-v8/raxml -f d -T 6 -j -s temp.phyx -n topology -c 25 -m GTRCAT -p 344312987 -t initial_tree.newick", shell=True)
 			while (time.time() < end_time):
 				if os.path.isfile('RAxML_result.topology'):
 					break
@@ -415,7 +498,7 @@ class process(virus_frequencies):
 			shutil.copy("initial_tree.newick", 'raxml_tree.newick')
 
 		print "RAxML branch length optimization and rooting"
-		os.system("/Users/yujia_zhou/Documents/Work/Raxml/raxmlHPC-AVX-v8/raxml -f e -T 6 -s temp.phyx -n branches -c 25 -m GTRGAMMA -p 344312987 -t raxml_tree.newick -o " + self.outgroup['strain'])
+		os.system("/Users/yujiazhou/Documents/nextflu/raxmlHPC-AVX-v8/raxml -f e -T 6 -s temp.phyx -n branches -c 25 -m GTRGAMMA -p 344312987 -t raxml_tree.newick -o " + self.outgroup['strain'])
 
 		out_fname = "tree_infer.newick"
 		shutil.copy('RAxML_result.branches', out_fname)
@@ -454,7 +537,7 @@ class process(virus_frequencies):
 		self.regions = sorted(regions)
 		self.region_totals = {reg:sum(val[reg] for val in self.date_region_count.values()) for reg in self.regions}
 		
-	def temporal_host_statistics(self):
+	'''def temporal_host_statistics(self):
 		from collections import defaultdict, Counter
 		self.date_host_count = defaultdict(lambda:defaultdict(int))
 		hosts = set()
@@ -464,7 +547,7 @@ class process(virus_frequencies):
 				self.date_host_count[(year, month)][v.host]+=1
 				hosts.add(v.host)
 		self.hosts = sorted(hosts)
-		self.host_totals = {hos:sum(val[hos] for val in self.date_host_count.values()) for hos in self.hosts}
+		self.host_totals = {hos:sum(val[hos] for val in self.date_host_count.values()) for hos in self.hosts}'''
 		
 	def determine_variable_positions(self):
 		'''
@@ -506,9 +589,28 @@ class process(virus_frequencies):
 				self.variable_aa_identities[anno] = [ [self.aa_alphabet[ii] for ii in np.where(tmp_af[:,pos])[0]]
 												for pos in xrange(tmp_af.shape[1])]
 				self.aa_frequencies[anno] = tmp_af
+				
+		'''if hasattr(self, 'aa_alnh'):
+			self.variable_aa = {}
+			self.consensus_aa = {}
+			self.aa_entropy = {}
+			self.aa_frequencies = {}
+			self.variable_aa_identities = {}
+			for anno, aln in self.aa_aln.iteritems():
+				aln_array = np.array(aln)
+				tmp_af = np.zeros((len(self.aa_alphabet),aln_array.shape[1]))
+				for ai,aa in enumerate(self.aa_alphabet):
+					tmp_af[ai,:]=(aln_array==aa).mean(axis=0)
+
+				self.variable_aa[anno] = np.where(np.max(tmp_af,axis=0)<1.0-self.min_mutation_frequency)[0]
+				self.consensus_aa[anno] = "".join(np.fromstring(self.aa_alphabet, 'S1')[np.argmax(tmp_af,axis=0)])
+				self.aa_entropy[anno] = -np.sum(tmp_af*np.log(np.maximum(1e-10,tmp_af)), axis=0)
+				self.variable_aa_identities[anno] = [ [self.aa_alphabet[ii] for ii in np.where(tmp_af[:,pos])[0]]
+												for pos in xrange(tmp_af.shape[1])]
+				self.aa_frequencies[anno] = tmp_af'''
 
 
-	def estimate_frequencies(self, tasks = ['mutations','genotypes', 'clades', 'tree']):
+	def estimate_frequencies(self, tasks = ['mutations', 'genotypes', 'clades', 'tree']):
 		if 'mutations' in tasks:
 			self.frequencies["mutations"]={reg:{} for reg, _ in self.aggregate_regions}
 			for gene in self.cds:

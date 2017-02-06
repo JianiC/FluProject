@@ -27,7 +27,7 @@ def HI_fix_name(name):
 
 class HI_tree(object):
 
-	def __init__(self, HI_fname = '/Users/yujia_zhou/Documents/Work/H9_nextflu-master/augur/src/data/HI_titers.txt',serum_Kc = 0.0,  min_aamuts = 0,**kwargs):
+	def __init__(self, HI_fname = '/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/augur/src/data/HI_titers.txt',serum_Kc = 0.0,  min_aamuts = 0,**kwargs):
 		self.HI_fname = HI_fname
 		if "excluded_tables" in kwargs:
 			self.excluded_tables = kwargs["excluded_tables"]
@@ -35,10 +35,10 @@ class HI_tree(object):
 			self.excluded_tables = []
 		self.HI, tmp, sources = self.read_HI_titers(HI_fname)
 		self.sources = list(sources)
-		self.serum_Kc = serum_Kc
+		#self.serum_Kc = serum_Kc
 		self.tree_graph = None
 		self.min_aamuts = min_aamuts
-		self.serum_potency = {}
+		#self.serum_potency = {}
 		self.virus_effect = {}
 
 	def read_HI_titers(self, fname):
@@ -48,12 +48,11 @@ class HI_tree(object):
 		with myopen(fname, 'r') as infile:
 			for line in infile:
 				entries = line.strip().split()
-				test, ref_virus, serum, src_id, val = (entries[0], entries[1],entries[2],
-														entries[3], float(entries[4]))
+				test, ref_virus, src_id, val = (entries[0], entries[1], entries[3], float(entries[4]))
 				ref = (ref_virus, serum)
 				if src_id not in self.excluded_tables:
 					try:
-						measurements[(test, (ref_virus, serum))].append(val)
+						measurements[(test, (ref_virus))].append(val)
 						strains.update([test, ref])
 						sources.add(src_id)
 					except:
@@ -65,12 +64,7 @@ class HI_tree(object):
 		return consensus_func(np.log2(self.autologous_titers[ref]['val'])) - consensus_func(np.log2(val))
 
 	def normalize_HI(self):
-		'''
-		convert the HI measurements into the log2 difference between the average
-		HI titer measured between test virus and reference serum and the average
-		homologous titer. all measurements relative to sera without homologous titer
-		are excluded
-		'''
+		
 		self.HI_normalized = {}
 		self.HI_raw = {}
 		self.measurements_per_serum = defaultdict(int)
@@ -113,12 +107,10 @@ class HI_tree(object):
 
 		self.sera = list(sera)
 		self.ref_strains = list(ref_strains)
-		self.HI_strains = list(HI_strains)
+		#self.HI_strains = list(HI_strains)
 
 	def add_mutations(self):
-		'''
-		add amino acid mutations to the tree
-		'''
+		
 		self.tree.seed_node.mutations= []
 		for node in self.tree.postorder_node_iter():
 			if node is not self.tree.seed_node:
@@ -161,9 +153,9 @@ class HI_tree(object):
 		print "# of reference strains:",len(self.sera), "# of branches with HI constraint", self.HI_split_count
 
 	def get_path_no_terminals(self, v1, v2):
-		'''
-		returns the path between two tips in the tree excluding the terminal branches.
-		'''
+
+		#returns the path between two tips in the tree excluding the terminal branches.
+		
 		if v1 in self.node_lookup and v2 in self.node_lookup:
 			p1 = [self.node_lookup[v1]]
 			p2 = [self.node_lookup[v2]]
@@ -182,7 +174,7 @@ class HI_tree(object):
 		return path
 
 	def get_mutations(self, strain1, strain2):
-		''' return amino acid mutations between viruses specified by strain names as tuples (HA1, F159S) '''
+		
 		if strain1 in self.node_lookup and strain2 in self.node_lookup:
 			node1 = self.node_lookup[strain1].parent_node
 			node2 = self.node_lookup[strain2].parent_node
@@ -207,7 +199,7 @@ class HI_tree(object):
 		the matrix has dimensions #measurements x #observed mutations
 		'''
 		seq_graph = []
-		HI_dist = []
+		#HI_dist = []
 		weights = []
 		# count how often each mutation separates a reference test virus pair
 		self.mutation_counter = defaultdict(int)
@@ -457,9 +449,9 @@ class HI_tree(object):
 		and determine which branches on the tree are transversed by HI measurements
 		'''
 		from random import sample
-		self.normalize_HI()
+		#self.normalize_HI()
 		self.add_mutations()
-		self.mark_HI_splits()
+		#self.mark_HI_splits()
 		if self.training_fraction<1.0: # validation mode, set aside a fraction of measurements to validate the fit
 			self.test_HI, self.train_HI = {}, {}
 			if self.subset_strains:    # exclude a fraction of test viruses
@@ -681,8 +673,8 @@ class HI_tree(object):
 		to auspice for display in the browser
 		'''
 		for ref in self.ref_strains: # add empty data structures
-			self.node_lookup[ref].HI_titers= defaultdict(dict)
-			self.node_lookup[ref].HI_titers_raw= defaultdict(dict)
+			#self.node_lookup[ref].HI_titers= defaultdict(dict)
+			#self.node_lookup[ref].HI_titers_raw= defaultdict(dict)
 			self.node_lookup[ref].potency_mut={}
 			self.node_lookup[ref].potency_tree={}
 			self.node_lookup[ref].autologous_titers = {}
@@ -702,11 +694,11 @@ class HI_tree(object):
 				self.node_lookup[ref[0]].HI_titers_raw[self.node_lookup[test].clade][ref[1]] = val
 			except:
 				print("Can't assign",test, ref)
-		for test in self.HI_strains: # add the virus avidities to each node with HI information
+		'''for test in self.HI_strains: # add the virus avidities to each node with HI information
 			if 'mutation' in self.virus_effect:
 				self.node_lookup[test].avidity_tree = self.virus_effect['mutation'][test]
 			if 'tree' in self.virus_effect:
-				self.node_lookup[test].avidity_mut = self.virus_effect['tree'][test]
+				self.node_lookup[test].avidity_mut = self.virus_effect['tree'][test]'''
 		for ref in self.ref_strains: # add average potencies and titers to each reference virus (not actually used in auspice right now).
 			self.node_lookup[ref].mean_HI_titers = {key:np.mean(titers.values()) for key, titers in
 			 									self.node_lookup[ref].HI_titers.iteritems()}
@@ -923,7 +915,7 @@ def read_tables(flutype = 'H9'):
 	return HI_matrices
 
 def read_trevor_table(flutype):
-	trevor_table = ' /Users/yujia_zhou/Documents/Work/H9_nextflu-master/augur/src/data/'+flutype+'_HI.tsv'
+	trevor_table = ' /Users/yujiazhou/Documents/nextflu/H9_nextflu-master/augur/src/data/'+flutype+'_HI.tsv'
 	import csv
 	measurements = []
 	sera = set()
@@ -971,8 +963,8 @@ def write_strains_with_HI_and_sequence(flutype='H9'):
 	HI_strains.update(HI_trevor[0])
 	from Bio import SeqIO
 	good_strains = set()
-	with myopen(' /Users/yujia_zhou/Documents/Work/H9_nextflu-master/augur/src/data/'+flutype+"_strains_with_HI.fasta", 'w') as outfile, \
-		 myopen(' /Users/yujia_zhou/Documents/Work/H9_nextflu-master/augur/src/data/'+flutype+"_gisaid_epiflu_sequence.fasta", 'r') as infile:
+	with myopen(' /Users/yujiazhou/Documents/nextflu/H9_nextflu-master/augur/src/data/'+flutype+"_strains_with_HI.fasta", 'w') as outfile, \
+		 myopen(' /Users/yujiazhou/Documents/nextflu/H9_nextflu-master/augur/src/data/'+flutype+"_gisaid_epiflu_sequence.fasta", 'r') as infile:
 		for seq_rec in SeqIO.parse(infile, 'fasta'):
 			tmp_name = seq_rec.description.split('|')[0].strip()
 			reduced_name = HI_fix_name(tmp_name)
@@ -986,7 +978,7 @@ def write_strains_with_HI_and_sequence(flutype='H9'):
 		test, ref, src_id, val = rec
 		titer_count[test]+=1
 
-	with myopen(' /Users/yujia_zhou/Documents/Work/H9_nextflu-master/augur/src/data/'+flutype+"_HI_strains.txt", 'w') as HI_strain_outfile:
+	with myopen(' /Users/yujiazhou/Documents/nextflu/H9_nextflu-master/augur/src/data/'+flutype+"_HI_strains.txt", 'w') as HI_strain_outfile:
 		for strain, count in sorted(titer_count.items(), key=lambda x:x[1], reverse=True):
 			HI_strain_outfile.write(strain + '\t'+str(count)+'\n')
 			if fix_name(strain)!=strain:
@@ -995,10 +987,10 @@ def write_strains_with_HI_and_sequence(flutype='H9'):
 
 def write_flat_HI_titers(flutype = 'H9', fname = None):
 	measurements = get_all_titers_flat(flutype)
-	with myopen(' /Users/yujia_zhou/Documents/Work/H9_nextflu-master/augur/src/data/'+flutype+'_HI_strains.txt') as infile:
+	with myopen(' /Users/yujiazhou/Documents/nextflu/H9_nextflu-master/augur/src/data/'+flutype+'_HI_strains.txt') as infile:
 		strains = [HI_fix_name(line.strip().split('\t')[0]).upper() for line in infile]
 	if fname is None:
-		fname = ' /Users/yujia_zhou/Documents/Work/H9_nextflu-master/augur/src/data/'+flutype+'_HI_titers.txt'
+		fname = ' /Users/yujiazhou/Documents/nextflu/H9_nextflu-master/augur/src/data/'+flutype+'_HI_titers.txt'
 	written = 0
 	skipped = 0
 	with myopen(fname, 'w') as outfile:
@@ -1016,13 +1008,13 @@ def export_ref_strains(myflu):
 	strains = []
 	for r in myflu.ref_strains:
 		tmp = myflu.sequence_lookup[myflu.node_lookup[r].strain]
-		strains.append({'seq': str(tmp.seq), 'date': tmp.date, 'strain': tmp.strain, 'region': tmp.region, 'host': tmp.host, 'country':tmp.country})
+		strains.append({'seq': str(tmp.seq), 'date': tmp.date, 'strain': tmp.strain, 'region': tmp.region, 'country':tmp.country})
 	from json import dump as jdump
-	with open('/Users/yujia_zhou/Documents/Work/H9_nextflu-master/augur/source-data/'+ myflu.virus_type+'_ref_strains.json', 'w') as ofile:
+	with open('/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/augur/source-data/'+ myflu.virus_type+'_ref_strains.json', 'w') as ofile:
 		jdump(strains, ofile, indent=2)
 
 
-def main(tree, HI_fname=' /Users/yujia_zhou/Documents/Work/H9_nextflu-master/augur/src/data/HI_titers.txt', training_fraction = 1.0, reg=5):
+def main(tree, HI_fname=' /Users/yujiazhou/Documents/nextflu/H9_nextflu-master/augur/src/data/HI_titers.txt', training_fraction = 1.0, reg=5):
 	print "--- Fitting HI titers at " + time.strftime("%H:%M:%S") + " ---"
 	measurements, strains, sources = read_HI_titers(HI_fname)
 	HI_map = HI_tree(tree, measurements)
@@ -1034,12 +1026,12 @@ if __name__ == "__main__":
 	from Bio import Phylo
 	from io_util import json_to_dendropy
 	reg = 10
-	tree_fname = '/Users/yujia_zhou/Documents/Work/H9_nextflu-master/auspice/data/tree_refine.json'
+	tree_fname = '/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/augur/src/data/tree_refine.json'
 	tree =  json_to_dendropy(read_json(tree_fname))
-	HI_map = main(tree, training_fraction=0.8, reg=reg)
-	HI_map.validate(plot=True)
+	#HI_map = main(tree, training_fraction=0.8, reg=reg)
+	#HI_map.validate(plot=True)
 	plot_tree(tree)
-	plot_dHI_distribution(tree)
+	#plot_dHI_distribution(tree)
 
-	out_tree_fname = '/Users/yujia_zhou/Documents/Work/H9_nextflu-master/auspice/data/tree_HI.json'
+	#out_tree_fname = '/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/auspice/data/tree_HI.json'
 	write_json(dendropy_to_json(tree.seed_node), out_tree_fname, indent=None)

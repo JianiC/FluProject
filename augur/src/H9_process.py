@@ -17,31 +17,34 @@ from itertools import izip
 virus_config.update({
 	# data source and sequence parsing/cleaning/processing
 	'virus':'H9',
-	'alignment_file':'/Users/yujia_zhou/Documents/Work/H9_nextflu-master/augur/src/data/H9_gisaid_epiflu_sequence.fasta',
+	'alignment_file':'/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/augur/src/data/H9_gisaid_epiflu_sequence.fasta',
 	'outgroup':'A/duck/HongKong/147/1977',
-	#'force_include':'/Users/yujia_zhou/Documents/Work/H9_nextflu-master/augur/src/data/H9_HI_strains.txt',
-	'force_include_all':True,
+	#'force_include':'/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/augur/src/data/H9_HI_strains.txt',
+	'force_include_all':False,
 	'date_spec':'year',
 	'max_global':True,   # sample as evenly as possible from different geographic regions
-	'max_globalh':True,
+	#'max_globalh':True,
 	'cds':[0,None], # define the HA1 start i n 0 numbering
 	'n_iqd':5,
 	'min_mutation_frequency':0.01,
 	# define relevant clades in canonical HA1 numbering (+1)
 	# numbering starting at HA1 start, adding sp to obtain numbering from methionine
-	''''clade_designations': { "3c3.a":[('HA1', 128,'A'), ('HA1',142,'G'), ('HA1',159,'S')],
-						   "3c3":   [('HA1', 128,'A'), ('HA1',142,'G'), ('HA1',159,'F')],
-						   "3c2.a": [('HA1', 144,'S'), ('HA1',159,'Y'), ('HA1',225,'D'), ('HA1', 311,'H'), ('HA2', 160,'N')],
-						   "3c2":   [('HA1', 144,'N'), ('HA1',159,'F'), ('HA1',225,'N'), ('HA2', 160,'N'), ('HA1', 142, 'R')],
-						   "3c3.b": [('HA1',  83,'R'), ('HA1',261,'Q'), ('HA1',62,'K'),  ('HA1', 122,'D')]
-								},'''
-	#'epitope_masks_fname':'/Users/yujia_zhou/Documents/Work/H9_nextflu-master/augur/source-data/H9_epitope_masks.tsv',
+	'''
+	'clade_designations': { "Y439":[('HA1',122,'F'), ('HA1',353,'P')],
+							"Korea":[('HA1',107,'M'), ('HA1',122,'F'), ('HA1',127,'R'), ('HA1',130,'K'), ('HA1',132,'L'), ('HA1',134,'L'), ('HA1',179,'D'), ('HA1',212,'I'), ('HA1',299,'T'), ('HA1',353,'P'), ('HA1',473,'K')],
+						   	"G1":[('HA1',353,'P'), ('HA1',473,'K')],
+							"Ck-Bei":[('HA1',107,'M'), ('HA1',299,'T'), ('HA1',473,'K')],
+						   	"G9":[('HA1',107,'M'), ('HA1',299,'T'), ('HA1',473,'K')],
+						   	"Y280":[('HA1',299,'T'), ('HA1',473,'K')]
+							},
+	'''
+	#'epitope_masks_fname':'/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/augur/source-data/H9_epitope_masks.tsv',
 	#'epitope_mask_version':'wolf',
-	'HI_fname':'/Users/yujia_zhou/Documents/Work/H9_nextflu-master/augur/src/data/H9_HI_titers.txt',
+	#'HI_fname':'/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/augur/src/data/H9_HI_titers.txt',
 	'auspice_prefix':'H9_',
-	'html_vars': {'coloring': 'ep, ne, rb, lbi, dfreq, region, host, date, cHI, HI_dist',
+	'html_vars': {'coloring': 'ep, ne, rb, lbi, dfreq, region, date, cHI',
 				   'gtplaceholder': 'HA1 positions...',
-					'freqdefault': '3c2.a, 3c3.a, 3c3.b'},
+					'freqdefault': 'Y439, Korea, G1, Ck-Bei, G9, Y280'},
 	'js_vars': {'LBItau': 0.0005, 'LBItime_window': 0.5, 'dfreq_dn':2},
 	'excluded_tables': ['NIMR_Sep2012_08.csv'], #, 'nimr-sep-2010-table8', 'nimr-sep-2010-table8','NIMR_Sep2012_11.csv'],
 	'layout':'auspice',
@@ -67,7 +70,7 @@ class H9_filter(flu_filter):
 					"date": "1997-07-01",
 					"seq": "ATGGAAATAATAGCACTAATAGCTATACTGGTAGTGACAAAAACAAGCAATGCAGATAAAATTTGCATTGGCTACCAGTCAACAAACTCCACAGAAACTGTTGATACACTAGTAGAAAACAATGTCCCTGTGACACATACCAAAGAATTGCTCCACACAGAGCACAATGGAATGCTATGTGCAACAAACCTGGGGCACCCTCTCATCCTAGACACCTGCACCATCGAAGGGTTGGTGTACGGCAACCCTTCCTGTGATTTGCTACTGGGAGGGAAAGAATGGTCTTACATTGTCGAAAGATCATCAGCTGTCAATGGGATGTGTTACCCTGGAAGGGTAGAGAACCTGGAAGAACTCAGGTCTTTTTTCAGCTCCGCTCGCTCCTACAAAAGACTCCTGCTCTTTCCAGACAGAACTTGGAATGTGACTTACACTGGGACAAGCAAAGCATGTTCAAACTCATTCTACAGAAGTATGAGATGGCTGACACACAAGAGCGATTCTTACCCTATTCAAGACGCCCAATATACTAACGATTGGGGAAAGAATATTCTCTTCATGTGGGGCATACACCACCCACCTACTGATACTGAGCAAATAAATCTATACAAAAAAGCTGATACAACAACAAGTATAACAACGGAAGATATCAATCGAACTTTCAAACCAGTGATAGGGCCAAGGCCTCTTGTCAATGGTCAACAAGGGAGAATTGATTATTATTGGTCAGTACTAAAGCCAGGCCAGACACTGCGAGTGAGATCCAATGGGAATCTAATTGCCCCATGGTATGGACACATTCTTTCAGGAGAAAGCCATGGAAGAATCTTGAAGACCGATTTGAGTAGTGGCAACTGCGTAGTACAATGCCAAACTGAGAAAGGTGGTTTGAACACGACCTTGCCATTCCACAATGTCAGCAAGTATGCATTTGGGAACTGCCCCAAATATGTTGGAGTGAAGAGTCTCAAACTGGCAGTTGGTCTAAGGAATGTTCCTGCTGCATCATATAGAGGGCTCTTCGGTGCCATAGCTGGATTCATAGAAGGCGGTTGGCCAGGACTAGTTGCAGGCTGGTACGGGTTTCAGCATTCAAATGATCAAGGGGTTGGAATGGCCGCAGATAGGGAATCAACTCAAGAAGCAGTTGACAAGATAACATCCAAAGTAAATAACATAATCGACAAAATGAACAAGCAGTATGGA------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------T--------------------------------------------------------------------------------------"}
 			]
-		tmp_outgroup = SeqIO.read('/Users/yujia_zhou/Documents/Work/H9_nextflu-master/augur/source-data/H9_outgroup.gb', 'genbank')
+		tmp_outgroup = SeqIO.read('/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/augur/source-data/H9_outgroup.gb', 'genbank')
 		genome_annotation = tmp_outgroup.features
 		self.cds = {x.qualifiers['gene'][0]:x for x in genome_annotation
 				if 'gene' in x.qualifiers and x.type=='CDS' and
@@ -104,7 +107,7 @@ class H9_clean(virus_clean):
 
 		self.viruses = MultipleSeqAlignment(new_viruses)
 
-	"""def clean_reassortants(self):
+	'''def clean_reassortants(self):
 		from seq_util import hamming_distance as distance
 		#Remove viruses from the outbreak of triple reassortant pH1N1
 		remove_viruses = []
@@ -127,7 +130,7 @@ class H9_clean(virus_clean):
 					if self.verbose>1:
 						print "\tremoving", v.strain
 
-		self.viruses = MultipleSeqAlignment([v for v in self.viruses if v not in remove_viruses])"""
+		self.viruses = MultipleSeqAlignment([v for v in self.viruses if v not in remove_viruses])'''
 
 	def clean_outliers(self):
 		"""Remove single outlying viruses"""
@@ -152,9 +155,10 @@ class H9_clean(virus_clean):
 		#print "Number of viruses after outlier filtering:",len(self.viruses)
 
 class H9_refine(tree_refine):
-	"""def __init__(self, **kwargs):
+	def __init__(self, **kwargs):
 		tree_refine.__init__(self, **kwargs)
-		self.epitope_mask = ""
+
+		'''self.epitope_mask = ""
 		if "epitope_masks_fname" in self.kwargs and "epitope_mask_version" in self.kwargs:
 			epitope_map = {}
 			with open(self.kwargs["epitope_masks_fname"]) as f:
@@ -163,21 +167,21 @@ class H9_refine(tree_refine):
 					epitope_map[key] = value
 			if self.kwargs["epitope_mask_version"] in epitope_map:
 				self.epitope_mask = epitope_map[self.kwargs["epitope_mask_version"]]
-		self.epitope_mask = np.fromstring(self.epitope_mask, dtype='S1')"""				# epitope_mask is numpy array
+		self.epitope_mask = np.fromstring(self.epitope_mask, dtype='S1')				# epitope_mask is numpy array'''
 
 	def refine(self):
 		self.refine_generic()  # -> all nodes now have aa_seq, xvalue, yvalue, trunk, and basic virus properties
-		#self.add_H9_attributes()
+		self.add_H9_attributes()
 
-	"""def epitope_sites(self, aa):
+	'''def epitope_sites(self, aa):
 		aaa = np.fromstring(aa, 'S1')
 		return ''.join(aaa[self.epitope_mask[:len(aa)]=='1'])
 
 	def nonepitope_sites(self, aa):
 		aaa = np.fromstring(aa, 'S1')
-		return ''.join(aaa[self.epitope_mask[:len(aa)]=='0'])"""
+		return ''.join(aaa[self.epitope_mask[:len(aa)]=='0'])
 
-	"""def receptor_binding_sites(self, aa):
+	def receptor_binding_sites(self, aa):
 		
 		Receptor binding site mutations from Koel et al. 2014
 		These are (145, 155, 156, 158, 159, 189, 193) in canonical HA numbering
@@ -185,15 +189,13 @@ class H9_refine(tree_refine):
 		
 		sp = 16
 		rbs = map(lambda x:x+sp-1, [145, 155, 156, 158, 159, 189, 193])					
-		return ''.join([aa[pos] for pos in rbs])"""
+		return ''.join([aa[pos] for pos in rbs])'''
+	
+	def get_total_peptide(self, node):	
+		#the concatenation of signal peptide, HA1, HA1		
+		return node.aa_seq['SigPep']+node.aa_seq['HA1']+node.aa_seq['HA2']
 
-	#def get_total_peptide(self, node):
-		
-		#the concatenation of signal peptide, HA1, HA1
-		
-		#return node.aa_seq['SigPep']+node.aa_seq['HA1'] + node.aa_seq['HA2']
-
-	"""def epitope_distance(self, aaA, aaB):
+	'''def epitope_distance(self, aaA, aaB):
 		Return distance of sequences aaA and aaB by comparing epitope sites
 		epA = self.epitope_sites(aaA)
 		epB = self.epitope_sites(aaB)
@@ -205,7 +207,7 @@ class H9_refine(tree_refine):
 		neA = self.nonepitope_sites(aaA)
 		neB = self.nonepitope_sites(aaB)
 		distance = sum(a != b for a, b in izip(neA, neB))
-		return distance"""
+		return distance'''
 
 	#def receptor_binding_distance(self, aaA, aaB):
 		#Return distance of sequences aaA and aaB by comparing receptor binding sites
@@ -243,11 +245,11 @@ class H9_fitness(fitness_model):
 class H9_process(process, H9_filter, H9_clean, H9_refine, H9_fitness):
 	"""docstring for H9_process, H9_filter"""
 	def __init__(self,verbose = 0, force_include = None,
-				force_include_all = False, max_global= True, max_globalh= True, **kwargs):
+				force_include_all = False, max_global= True, **kwargs):
 		self.force_include = force_include
 		self.force_include_all = force_include_all
 		self.max_global = max_global
-		self.max_globalh = max_globalh
+		#self.max_globalh = max_globalh
 		process.__init__(self, **kwargs)
 		H9_filter.__init__(self,**kwargs)
 		H9_clean.__init__(self,**kwargs)
@@ -268,7 +270,8 @@ class H9_process(process, H9_filter, H9_clean, H9_refine, H9_fitness):
 			self.subsample(viruses_per_month,
 				prioritize=forced_strains, all_priority=self.force_include_all,
 				region_specific = self.max_global)
-			self.add_older_vaccine_viruses(dt = 3)'''
+			self.add_older_vaccine_viruses(dt = 3)
+			self.add_older_new_viruses(dt = 3)'''
 			self.dump()
 		else:
 			self.load()
@@ -293,7 +296,8 @@ class H9_process(process, H9_filter, H9_clean, H9_refine, H9_fitness):
 		if 'frequencies' in steps:
 			print "--- Estimating frequencies at " + time.strftime("%H:%M:%S") + " ---"
 			self.determine_variable_positions()
-			self.estimate_frequencies(tasks = ["mutations", "tree"])
+			#self.all_clade_frequencies(self, **kwargs)
+			self.estimate_frequencies(tasks = ["mutations", "clades", "tree"])
 			if 'genotype_frequencies' in steps:
 					self.estimate_frequencies(tasks = ["genotypes"])
 			self.dump()
@@ -324,12 +328,15 @@ class H9_process(process, H9_filter, H9_clean, H9_refine, H9_fitness):
 			# exporting to json, including the H9 specific fields
 			self.export_to_auspice(tree_fields = [
 				'ep', 'ne', 'rb', 'aa_muts','accession','isolate_id', 'lab','db', 'country', 'dfreq', 'fitness', 'pred_distance',
-				'dHI', 'cHI', 'mHI', 'mean_HI_titers', 'HI_titers', 'HI_titers_raw', 'serum', 'HI_info',
-				'avidity_tree', 'avidity_mut', 'potency_mut', 'potency_tree', 'mean_potency_mut', 'mean_potency_tree', 'autologous_titers'],
-				   annotations = ['3c2.a', '3c3.a', '3c3.b'])
+				'dHI', 'cHI', 'mHI', 'mean_HI_titers', 'avidity_tree', 'avidity_mut', 'potency_mut', 'potency_tree', 'mean_potency_mut', 'mean_potency_tree', 'autologous_titers'],
+				   annotations = ['Y439', 'G1', 'Ck-Bei', 'G9', 'Korea', 'Y280'])
+			#self.export_fasta_alignment()
+			#self.export_newick_tree()
 			if params.html:
 				self.generate_indexHTML()
 			#self.export_HI_mutation_effects()
+			#self.export_clade_frequencies()
+			#self.export_viruses()
 
 		if 'HIvalidate' in steps:
 			from diagnostic_figures import tree_additivity_symmetry, fmts
@@ -351,8 +358,7 @@ class H9_process(process, H9_filter, H9_clean, H9_refine, H9_fitness):
 
 
 if __name__=="__main__":
-	all_steps = ['filter', 'align', 'clean', 'tree', 'ancestral', 'refine',
-				 'frequencies', 'export']
+	all_steps = ['filter', 'align', 'clean', 'tree', 'ancestral', 'refine', 'frequencies', 'export']
 
 	from process import parser
 	import matplotlib.pyplot as plt

@@ -94,7 +94,7 @@ def  calc_tolerance(tree, attr='tol'):
 	'''
 	from Bio import AlignIO
 	aa, sites, wt_aa, aa_prob = load_mutational_tolerance()
-	aln = AlignIO.read('/Users/yujia_zhou/Documents/Work/H9_nextflu-master/augur/source-data/H1_H3.fasta', 'fasta')
+	aln = AlignIO.read('/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/augur/source-data/H1_H3.fasta', 'fasta')
 	# returns true whenever either of the sequences have a gap
 	aligned = (np.array(aln)!='-').min(axis=0)
 	# map alignment positions to sequence positions, subset to aligned amino acids
@@ -199,7 +199,7 @@ def calc_LBI(tree, attr = 'lbi', tau=0.0005, transform = lambda x:x):
 			tmp_LBI += child.up_polarizer
 		node.__setattr__(attr, transform(tmp_LBI))
 
-def main(tree_fname = 'tree_refine.json'):
+def main(tree_fname = 'data/tree_refine.json'):
 
 	print "--- Testing predictor evaluations ---"
 	tree =  json_to_dendropy(read_json(tree_fname))
@@ -214,7 +214,7 @@ def main(tree_fname = 'tree_refine.json'):
 #	calc_LBI(tree)
 
 	print "Writing decorated tree"
-	out_fname = "tree_predictors.json"
+	out_fname = "data/tree_predictors.json"
 	write_json(dendropy_to_json(tree.seed_node), out_fname)
 	return out_fname
 

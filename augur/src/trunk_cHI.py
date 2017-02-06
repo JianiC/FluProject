@@ -24,7 +24,7 @@ def add_panel_label(ax,label, x_offset=-0.1):
 #############################################
 plt.figure(figsize=(1.3*figheight, figheight))
 ax=plt.subplot(111)
-flist = glob.glob('*'+res+'_cHI.txt')
+flist = glob.glob('data/*'+res+'_cHI.txt')
 for fname in flist:
     flu = fname.split('/')[-1].split('_')[0]
     cHI_trunk = np.loadtxt(fname)

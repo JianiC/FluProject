@@ -262,7 +262,7 @@ def main(tree, viruses):
 	anc_seq = ancestral_sequences(tree, aln, seqtype='str')
 	anc_seq.calc_ancestral_sequences()
 	anc_seq.cleanup_tree()
-	out_fname = "tree_ancestral.json"
+	out_fname = "data/tree_ancestral.json"
 	return json_to_dendropy(anc_seq.T.seed_node)
 
 if __name__=="__main__":

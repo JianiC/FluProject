@@ -28,14 +28,14 @@ def get_slope(freq, pivots, threshold):
 ##### merge accession number files
 ####################################
 def make_combined_accession_number_lists():
-    for flu in ['H9']:
-        flist = glob.glob('/Users/yujia_zhou/Documents/Work/H9_nextflu-master/auspice/'+flu+'*accession_numbers.tsv')
+    for flu in ['H9', 'H4', 'H7', 'H10']:
+        flist = glob.glob('/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/auspice/data/'+flu+'*accession_numbers.tsv')
         all_accessions=set()
         for fname in flist:
             with open(fname) as infile:
                 all_accessions.update([tuple(line.split('\t')[:2]) for line in infile])
 
-        with open('/Users/yujia_zhou/Documents/Work/H9_nextflu-master/auspice/'+flu+'_all_accession_numbers.tsv', 'w') as ofile:
+        with open('/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/auspice/data/'+flu+'_all_accession_numbers.tsv', 'w') as ofile:
             for strain, acc in all_accessions:
                 ofile.write(strain+'\t'+acc+'\n')
                 
@@ -44,13 +44,13 @@ def make_combined_accession_number_lists():
 ####################################
 def make_combined_species_lists():
     for flu in ['H9']:
-        flist = glob.glob('/Users/yujia_zhou/Documents/Work/H9_nextflu-master/auspice/'+flu+'*species.tsv')
+        flist = glob.glob('/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/auspice/'+flu+'*species.tsv')
         all_species=set()
         for fname in flist:
             with open(fname) as infile:
                 all_species.update([tuple(line.split('\t')[:2]) for line in infile])
 
-        with open('/Users/yujia_zhou/Documents/Work/H9_nextflu-master/auspice/'+flu+'_all_species.tsv', 'w') as ofile:
+        with open('/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/auspice/'+flu+'_all_species.tsv', 'w') as ofile:
             for strain, acc in all_species:
                 ofile.write(strain+'\t'+species+'\t'+acc+'\n')
 
@@ -59,7 +59,7 @@ def make_combined_species_lists():
 ######################################
 def mutation_list(flu = 'H9', format='tsv', nconstraints=False):
     import pandas as pd
-    flist = glob('/Users/yujia_zhou/Documents/Work/H9_nextflu-master/auspice/'+flu+'/*to*/HI_mutation_effects.tsv')
+    flist = glob('/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/auspice/'+flu+'/*to*/HI_mutation_effects.tsv')
     mutation_effects = {}
     mutation_counts = {}
     for fname in flist:
@@ -107,7 +107,7 @@ def mutation_list_by_position(flu = 'H9', format='tsv', nconstraints=False):
     from glob import glob
     import pandas as pd
     from collections import defaultdict
-    flist = glob('/Users/yujia_zhou/Documents/Work/H9_nextflu-master/auspice/'+flu+'/*to*/HI_mutation_effects.tsv')
+    flist = glob('/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/auspice/'+flu+'/*to*/HI_mutation_effects.tsv')
 
     mutation_effects = defaultdict(list)
     intervals = []
@@ -155,7 +155,7 @@ def mutation_list_by_position(flu = 'H9', format='tsv', nconstraints=False):
 def trajectory_figure(flu = 'H9', res = '1985to2016'):
     import cPickle as pickle
     from collections import defaultdict
-    freqs = pickle.load(open('/Users/yujia_zhou/Documents/Work/H9_nextflu-master/augur/'+'_'.join([flu, res, 'frequencies.pkl'])))
+    freqs = pickle.load(open('/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/augur/'+'_'.join([flu, res, 'frequencies.pkl'])))
     freqs = freqs['mutations']['global']
     freqs_by_position = defaultdict(list)
     for mut, freq in freqs.iteritems():

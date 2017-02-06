@@ -7,7 +7,7 @@ plt.ion()
 val_data = []
 res='12y'
 grid = [0.1, 0.3, 1.0,3.0, 10.0]
-for flu in ['H9']:
+for flu in ['H9', 'H4', 'H7', 'H10']:
     for minaa in [0]: #,1,'epi']:
         for hi, lam_HI in enumerate(grid):
             for training in ['measurements', 'virus']:
@@ -31,7 +31,7 @@ cols = sns.color_palette(n_colors=len(grid))
 ls = ['-', '--', '-.']
 #training = 'virus'
 training = 'measurements'
-for flu in ['H9']:
+for flu in ['H9', 'H4', 'H7', 'H10']:
     fig, axs = plt.subplots(2,len(grid), sharey='row')
     plt.suptitle(str([flu, training, minaa]))
     for training in ['virus', 'measurements']:

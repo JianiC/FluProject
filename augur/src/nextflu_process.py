@@ -1,5 +1,5 @@
 import time, argparse,os,subprocess, shutil, glob, sys
-sys.path.append('/Users/yujia_zhou/Documents/Work/nextflu-master/augur/src')
+sys.path.append('/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/augur/src')
 from Bio import SeqIO
 from io_util import write_json, read_json, write_fasta, read_fasta
 from tree_util import dendropy_to_json, json_to_dendropy, delimit_newick
@@ -10,10 +10,10 @@ class nextflu(object):
 		self.viruses = None
 		self.tree = None
 		self.frequencies = {}
-		self.initial_virus_fname = '/Users/yujia_zhou/H9_nextflu-master/augur/src/data/virus_ingest.json'
-		self.clean_virus_fname = '/Users/yujia_zhou/H9_nextflu-master/augur/src/data/virus_clean.json'
-		self.intermediate_tree_fname = '/Users/yujia_zhou/H9_nextflu-master/augur/src/data/tree_refine.json'
-		self.frequency_fname = '/Users/yujia_zhou/H9_nextflu-master/augur/src/data/frequencies.json'
+		self.initial_virus_fname = '/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/augur/src/data/virus_ingest.json'
+		self.clean_virus_fname = '/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/augur/src/data/virus_clean.json'
+		self.intermediate_tree_fname = '/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/augur/src/data/tree_refine.json'
+		self.frequency_fname = '/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/augur/src/data/frequencies.json'
 
 	def load_from_file(self, tree_fname=None, virus_fname = None):
 		if tree_fname is None: tree_fname = self.intermediate_tree_fname
@@ -92,9 +92,9 @@ class nextflu(object):
 		#if 'specieshost' in tasks:
 			#self.frequencies['specieshost'] = freq_est.all_genotypes(self.tree, config['aggregate_hosts'], relevant_pos)
 			
-		'''if 'clades' in tasks:
+		if 'clades' in tasks:
 			self.frequencies['clades'] = freq_est.all_clades(self.tree, config['clade_designations'], 
-															config['aggregate_regions'], plot)'''
+															config['aggregate_regions'], plot)
 		if any(x in tasks for x in ['mutations','clades', 'genotypes']):
 			write_json(self.frequencies, self.frequency_fname)
 

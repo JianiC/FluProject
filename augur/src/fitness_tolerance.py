@@ -8,7 +8,7 @@ from tree_util import json_to_dendropy, dendropy_to_json
 import dendropy
 
 def load_mutational_tolerance():
-	fname = '/Users/yujia_zhou/Documents/Work/H9_nextflu-master/augur/source-data/Thyagarajan_Bloom_HA_fitness.txt'
+	fname = '/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/augur/source-data/Thyagarajan_Bloom_HA_fitness.txt'
 	with open(fname) as f:
 		aa = map(lambda x:x.split('_')[1], f.readline().strip().split()[3:])
 	sites = np.loadtxt(fname, usecols=[0], dtype=int)
@@ -20,15 +20,15 @@ def calc_fitness_tolerance(aa_seq, aa_prob, aa, indices, beta = 1.0):
 	'''
 	determine the indices of aligned amino acids and sum the logged probabilities
 	'''
-	H3_aa_indices = np.array([aa.index(aa_seq[p]) if aa_seq[p] in aa else -1 for p in indices])
-	return np.sum((H3_aa_indices!=-1)*np.log(aa_prob[(np.arange(len(indices)), H3_aa_indices)])*beta)
+	H9_aa_indices = np.array([aa.index(aa_seq[p]) if aa_seq[p] in aa else -1 for p in indices])
+	return np.sum((H9_aa_indices!=-1)*np.log(aa_prob[(np.arange(len(indices)), H9_aa_indices)])*beta)
 
 def assign_fitness(nodes):
 	'''
 	loops over all viruses, translates their sequences and calculates the virus fitness
 	'''
 	aa, sites, wt_aa, aa_prob = load_mutational_tolerance()
-	aln = AlignIO.read('/Users/yujia_zhou/Documents/Work/H9_nextflu-master/augur/source-data/H1_H3_77.fasta', 'fasta')
+	aln = AlignIO.read('/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/augur/source-data/H1_H3_77.fasta', 'fasta')
 	# returns true whenever neither of the sequences have a gap
 	aligned = (np.array(aln)!='-').min(axis=0)
 	# map alignment positions to sequence positions, subset to aligned amino acids

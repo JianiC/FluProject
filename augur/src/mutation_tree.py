@@ -10,12 +10,12 @@ from Bio.Align import MultipleSeqAlignment
 import numpy as np
 from itertools import izip
 
-std_outgroup_file = '/Users/yujia_zhou/Documents/Work/H9_nextflu-master/augur/source-data/outgroups.fasta'
+std_outgroup_file = '/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/augur/source-data/outgroups.fasta'
 virus_config.update({
 	# data source and sequence parsing/cleaning/processing
 	'fasta_fields':{0:'strain', 1:'date', 2:'isolate_id', 3:'passage', 4:'subtype', 5:'ori_lab', 6:'sub_lab', 7:'submitter'},
 	'cds':[0,None], # define the HA start i n 0 numbering
-	'auspice_prefix':'H1N1pdm_',
+	'auspice_prefix':'H4_',
 	'verbose':3
 	})
 
@@ -63,7 +63,7 @@ class mutation_tree(process, flu_filter, tree_refine, virus_clean):
 					return
 		self.viruses.append(self.outgroup)
 		self.filter_geo(prune=False)
-		self.filter_host(prune=False)
+		#self.filter_host(prune=False)
 		self.make_strain_names_unique()
 
 	def refine(self):
@@ -76,6 +76,7 @@ class mutation_tree(process, flu_filter, tree_refine, virus_clean):
 		self.add_node_attributes()
 		if self.cds is not None:
 			self.translate_all()
+			#self.translate_allh()
 			self.add_aa_mutations()
 		self.layout()
 		for v in self.viruses:
@@ -98,7 +99,7 @@ class mutation_tree(process, flu_filter, tree_refine, virus_clean):
 				return 8
 
 		def branch_label_func(n):
-			max_muts = 5
+			max_muts = 15
 			if hasattr(n,'aa_muts'):
 				muts = n.aa_muts
 			else:
@@ -202,9 +203,9 @@ if __name__=="__main__":
 	muttree.run(raxml_time_limit=0.1)
 	muttree.export()
 
-	shutil.copy2('/Users/yujia_zhou/Documents/Work/H9_nextflu-master/auspice/_site/js/muttree.js', muttree.outdir+'js/muttree.js')
-	shutil.copy2('/Users/yujia_zhou/Documents/Work/H9_nextflu-master/auspice/_site/muttree/index.html', muttree.outdir+'index.html')
-	shutil.copy2('/Users/yujia_zhou/Documents/Work/H9_nextflu-master/auspice/_site/css/style.css', muttree.outdir+'css/style.css')
+	shutil.copy2('/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/auspice/_site/js/muttree.js', muttree.outdir+'js/muttree.js')
+	shutil.copy2('/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/auspice/_site/muttree/index.html', muttree.outdir+'index.html')
+	shutil.copy2('/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/auspice/_site/css/style.css', muttree.outdir+'css/style.css')
 
 
 #	os.system('firefox '+muttree.outdir+'index.html &')

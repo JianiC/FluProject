@@ -429,7 +429,7 @@ def test(params):
 	from io_util import read_json
 	from tree_util import json_to_dendropy, to_Biopython, color_BioTree_by_attribute
 	from Bio import Phylo
-	tree_fname='tree_refine_10y_50v.json'
+	tree_fname='data/tree_refine_10y_50v.json'
 	tree =  json_to_dendropy(read_json(tree_fname))
 	fm = fitness_model(tree, predictors = params['predictors'], verbose=2)
 	fm.predict(niter = params['niter'])
@@ -446,7 +446,7 @@ def main(params):
 	
 	print "--- Start fitness model optimization at " + time.strftime("%H:%M:%S") + " ---"
 
-	tree_fname='tree_refine.json'
+	tree_fname='data/tree_refine.json'
 	tree =  json_to_dendropy(read_json(tree_fname))
 	fm = fitness_model(tree, predictors = params['predictors'], verbose=1)
 	fm.predict(niter = params['niter'])

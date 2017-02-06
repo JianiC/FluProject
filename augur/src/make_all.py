@@ -4,19 +4,13 @@ from Bio import SeqIO, AlignIO
 import numpy as np
 
 verbose = False
-patterns = {('A / H9', ''):'H9',
-			('A / H1N1', 'pdm09'):'H1N1pdm',
-			('B / H0N0', 'Victoria'):'Vic',
-			('B / H0N0', 'Yamagata'):'Yam',
-			('A / H1N1', 'seasonal'):'H1N1',
-			('A / H7N9', ''):'H7N9',
-			('A / H5N1', ''):'H5N1',
-			('A / H6N1', ''):'H6N1',
-			('A / H5N6', ''):'H5N6'
+patterns = {('A / H4', ''):'H4',
+			('A / H7', ''):'H7',
+			('A / H10', ''):'H10',
 			}
 
-outgroups = {lineage:SeqIO.read('/Users/yujia_zhou/Documents/Work/H9_nextflu-master/augur/source-data/'+lineage+'_outgroup.gb', 'genbank')
-			for lineage in ['H9']}
+outgroups = {lineage:SeqIO.read('/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/augur/source-data/'+lineage+'_outgroup.gb', 'genbank')
+			for lineage in ['H4', 'H7', 'H10']}
 
 def determine_lineage(seq):
 	fields = map(lambda x:x.strip(), seq.description.split('|'))
@@ -45,7 +39,7 @@ def determine_lineage(seq):
 			print fields[0], tmp_lineage, len(seq), "\n\t other: best scores:",scores[0]
 			return 'other'
 
-def pull_fasta_from_s3(lineage, directory = '/Users/yujia_zhou/Documents/Work/H9_nextflu-master/augur/src/data/', bucket = 'nextflu-data'):
+def pull_fasta_from_s3(lineage, directory = '/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/augur/src/data/', bucket = 'nextflu-data'):
 	"""Retrieve FASTA files from S3 bucket"""
 	"""Boto expects environmental variables AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY"""
 	directory = directory.rstrip('/')+'/'
@@ -61,7 +55,7 @@ def pull_fasta_from_s3(lineage, directory = '/Users/yujia_zhou/Documents/Work/H9
 	k.get_contents_to_filename(directory+fasta)
 	print fasta,"retrieved"
 
-def push_fasta_to_s3(lineage, directory = '/Users/yujia_zhou/Documents/Work/H9_nextflu-master/augur/src/data/', bucket = 'nextflu-data'):
+def push_fasta_to_s3(lineage, directory = '/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/augur/src/data/', bucket = 'nextflu-data'):
 	"""Upload FASTA files to S3 bucket"""
 	"""Boto expects environmental variables AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY"""
 	directory = directory.rstrip('/')+'/'
@@ -77,7 +71,7 @@ def push_fasta_to_s3(lineage, directory = '/Users/yujia_zhou/Documents/Work/H9_n
 	k.set_contents_from_filename(directory+fasta)
 	print fasta,"uploaded"
 
-def push_json_to_s3(lineage, resolution, directory = '/Users/yujia_zhou/Documents/Work/H9_nextflu-master/auspice/data/', bucket = 'nextflu-dev', cloudfront = 'E1XKGZG0ZTX4YN'):
+def push_json_to_s3(lineage, resolution, directory = '/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/auspice/data/', bucket = 'nextflu-dev', cloudfront = 'E1XKGZG0ZTX4YN'):
 	"""Upload JSON files to S3 bucket"""
 	"""Boto expects environmental variables AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY"""
 	directory = directory.rstrip('/')+'/'
@@ -92,15 +86,15 @@ def push_json_to_s3(lineage, resolution, directory = '/Users/yujia_zhou/Document
 	print "Uploading JSONs for", lineage, resolution
 	for postfix in ['tree.json', 'sequences.json', 'frequencies.json', 'meta.json']:
 		json = lineage + '_' + resolution + '_' + postfix
-		k.key = '/Users/yujia_zhou/Documents/Work/H9_nextflu-master/auspice/data/'+json
+		k.key = '/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/auspice/data/'+json
 		k.set_contents_from_filename(directory+json)
 		print json,"uploaded"
-		paths.append('/Users/yujia_zhou/Documents/Work/H9_nextflu-master/auspice/data/'+json)
+		paths.append('/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/auspice/data/'+json)
 
 	c = boto.connect_cloudfront()
 	c.create_invalidation_request(cloudfront, paths)
 
-def gather_strains(lineage, directory='/Users/yujia_zhou/Documents/Work/H9_nextflu-master/augur/src/data/'):
+def gather_strains(lineage, directory='/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/augur/src/data/'):
 	directory = directory.rstrip('/')+'/'
 	fname = lineage+'_gisaid_epiflu_sequence.fasta'
 	new_strains = []
@@ -114,7 +108,7 @@ def gather_strains(lineage, directory='/Users/yujia_zhou/Documents/Work/H9_nextf
 			new_strains.append(strain)
 	return new_strains
 
-def ammend_fasta(fname, lineage, existing_strains, threshold = 10, directory = '/Users/yujia_zhou/Documents/Work/H9_nextflu-master/augur/src/data/'):
+def ammend_fasta(fname, lineage, existing_strains, threshold = 10, directory = '/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/augur/src/data/'):
 	directory = directory.rstrip('/')+'/'
 	updated = False
 	ex_fname = directory+lineage+'_gisaid_epiflu_sequence.fasta'
@@ -150,8 +144,8 @@ if __name__=="__main__":
 	parser.add_argument('--ATG', action = "store_true", default = False, help = "include full HA sequence starting at ATG")
 	parser.add_argument('--all', action = "store_true", default = False)
 	parser.add_argument('--s3', action = "store_true", default = False, help = "push/pull FASTA and JSON files to/from S3")
-	parser.add_argument('--fasta_bucket', type = str, default = "/Users/yujia_zhou/Documents/Work/H9_nextflu-master/augur/src/data/nextflu-data", help = "bucket for FASTA files")
-	parser.add_argument('--json_bucket', type = str, default = "/Users/yujia_zhou/Documents/Work/H9_nextflu-master/auspice/data/nextflu-dev", help = "bucket for JSON files")
+	parser.add_argument('--fasta_bucket', type = str, default = "/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/augur/src/data/nextflu-data", help = "bucket for FASTA files")
+	parser.add_argument('--json_bucket', type = str, default = "/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/auspice/data/nextflu-dev", help = "bucket for JSON files")
 	parser.add_argument('--threshold', type = float, default = 10.0, help = "number of new sequences required to rerun pipeline")
 	parser.add_argument('--lineages', nargs='+', type = str,  help ="lineages to include")
 	parser.add_argument('--resolutions', nargs='+', type = str,  help ="resolutions to include")
@@ -164,7 +158,7 @@ if __name__=="__main__":
 	if params.html: common_args.append('--html')
 
 	if params.lineages is None:
-		params.lineages = ['H9']
+		params.lineages = ['H4', 'H7', 'H10']
 
 	if params.resolutions is None:
 		params.resolutions = ['3y', '6y', '12y']
@@ -175,23 +169,23 @@ if __name__=="__main__":
 
 	for lineage in params.lineages:
 		if params.s3:
-			pull_fasta_from_s3(lineage, directory = '/Users/yujia_zhou/Documents/Work/H9_nextflu-master/augur/src/data/', bucket = params.fasta_bucket)
+			pull_fasta_from_s3(lineage, directory = '/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/augur/src/data/', bucket = params.fasta_bucket)
 
 	existing_strains = []
-	for lineage in ['H9']:
-		existing_strains.extend(gather_strains(lineage, directory = '/Users/yujia_zhou/Documents/Work/H9_nextflu-master/augur/src/data/'))
+	for lineage in ['H4', 'H7', 'H10']:
+		existing_strains.extend(gather_strains(lineage, directory = '/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/augur/src/data/'))
 
 	for lineage in params.lineages:
 		print '\n------------------------------\n'
 		print 'Parsing new sequences for lineage',lineage
 		if params.all:
 			params.threshold = 0
-		run = ammend_fasta(params.infile, lineage, existing_strains, threshold = params.threshold, directory = '/Users/yujia_zhou/Documents/Work/H9_nextflu-master/augur/src/data/')
+		run = ammend_fasta(params.infile, lineage, existing_strains, threshold = params.threshold, directory = '/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/augur/src/data/')
 		if True:
 			for resolution in params.resolutions:
 				print '\n------------------------------\n'
 				print 'Processing lineage',lineage,'with resolution',resolution
-				process = '/Users/yujia_zhou/Documents/Work/H9_nextflu-master/augur/src/' + lineage + '_process.py'
+				process = '/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/augur/src/' + lineage + '_process.py'
 				is_interval = False
 				if resolution == '1y':
 					n_viruses = 100
@@ -268,5 +262,5 @@ if __name__=="__main__":
 				if not params.annotate:
 					subprocess.call(call)
 				if params.s3:
-					push_fasta_to_s3(lineage, directory = '/Users/yujia_zhou/Documents/Work/H9_nextflu-master/augur/src/data/', bucket = params.fasta_bucket)
-					push_json_to_s3(lineage, resolution, directory = '/Users/yujia_zhou/Documents/Work/H9_nextflu-master/auspice/', bucket = params.json_bucket)
+					push_fasta_to_s3(lineage, directory = '/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/augur/src/data/', bucket = params.fasta_bucket)
+					push_json_to_s3(lineage, resolution, directory = '/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/auspice/', bucket = params.json_bucket)

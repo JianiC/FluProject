@@ -214,12 +214,12 @@ class frequency_estimator(object):
 class virus_frequencies(object):
 	def __init__(self, time_interval = (2012.0, 2015.1),
 				frequency_stiffness = 10.0, pivots_per_year = 12.0,
-				aggregate_regions = None,
+				clade_designations={}, aggregate_regions = None,
 				#aggregate_hosts = None,
 				extra_pivots = 5, **kwargs):
 		self.stiffness = frequency_stiffness
 		self.pivots_per_year = pivots_per_year
-		#self.clade_designations=clade_designations
+		self.clade_designations= clade_designations
 		self.aggregate_regions = aggregate_regions
 		#self.aggregate_hosts = aggregate_hosts
 		self.extra_pivots = extra_pivots
@@ -236,8 +236,8 @@ class virus_frequencies(object):
 		gt   --		[(position, amino acid), ....]
 		'''
 		all_dates = [seq.annotations['num_date'] for seq in aln]
-		reduced_gt = tuple(aa for pos,aa in gt)
-		gts = zip(*[list(aln[:,pos]) for pos, aa in gt])
+		reduced_gt = tuple(aa for aa in gt)
+		gts = zip(*[list(aln[:,pos]) for pos in gt])
 		observations = [x==reduced_gt for x in gts]
 
 		all_dates = np.array(all_dates)
@@ -294,15 +294,18 @@ class virus_frequencies(object):
 					all_dates.append(seq_date)
 		return MultipleSeqAlignment(sub_aln)
 		
-		'''
-		for seq in self.nuc_aln if gene=='nuc' else self.aa_aln[gene]:
-			if hosts is None or seq.annotations['host'] in hosts:
-				seq_date = seq.annotations['num_date']
-				if seq_date>=self.time_interval[0] and seq_date < self.time_interval[1]:
+	'''def get_sub_alignment(self, hosts=None, gene='nuc'):
+		from Bio.Align import MultipleSeqAlignment
+		sub_alnh =[]
+		all_datesh = []
+		for seq in self.nuc_aln if gene=='nuc' else self.aa_alnh[gene]:
+			if hosts is None or seq.annotationsh['host'] in hosts:
+				seq_dateh = seq.annotationsh['num_date']
+				if seq_dateh>=self.time_interval[0] and seq_dateh < self.time_interval[1]:
 					sub_alian.append(seq)
-					all_dates.append(seq_date)
-		return MultipleSeqAlignment(sub_aln)
-		'''
+					all_dates.append(seq_dateh)
+		return MultipleSeqAlignment(sub_alnh)'''
+	
 	
 	def determine_mutation_frequencies(self, regions=None, threshold=0.01, gene='nuc'):
 		'''
@@ -356,9 +359,7 @@ class virus_frequencies(object):
 			alpha, freqs = self.aa_alphabet, self.aa_frequencies[gene]
 
 		mutation_frequencies = {"pivots":list(self.pivots)}
-		for mut, HI in self.mutation_effects.iteritems():
-			if HI<threshold:
-				continue
+		for mut in self.mutation_effects.iteritems():
 			if mut[0]!=gene:
 				print(mut,"has wrong gene")
 				continue
@@ -525,7 +526,7 @@ class virus_frequencies(object):
 				else:
 					break
 			ci+=1
-		'''
+			'''
 
 		# if the above loop finished assign the frequency of the remaining clade to the frequency_left
 		if ci==len(node.child_nodes())-1 and frequency_left is not None:
@@ -638,7 +639,7 @@ class virus_frequencies(object):
 	'''
 
 
-	'''def all_clade_frequencies(self, clades = None, gene='nuc'):
+	def all_clade_frequencies(self, clades = None, gene='nuc'):
 		if not hasattr(self, 'nuc_frequencies'):
 			self.determine_variable_positions()
 		if clades is None:
@@ -649,7 +650,7 @@ class virus_frequencies(object):
 		self.frequencies["clades"] = {}
 		for region_label, regions in self.aggregate_regions:
 			print "--- "+"determining clade frequencies "+region_label+ " "  + time.strftime("%H:%M:%S") + " ---"
-			self.frequencies["clades"][region_label] = self.determine_clade_frequencies(clades, regions=regions, gene=gene)'''
+			self.frequencies["clades"][region_label] = self.determine_clade_frequencies(clades, regions=regions, gene=gene)
 
 	def all_tree_frequencies(self, threshold = 20):
 		for region_label, regions in self.aggregate_regions:

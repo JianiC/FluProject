@@ -13,5 +13,5 @@ outgroups = {#'H9':'U26830',
 for virus, genbank_id in outgroups.iteritems(): 
     handle = Entrez.efetch(db="nucleotide", id=genbank_id, rettype="gb")
     seq= SeqIO.read(StringIO(handle.read()), format = 'genbank')
-    SeqIO.write(seq, '/Users/yujia_zhou/Documents/Work/H9_nextflu-master/augur/source-data/'+virus+'_outgroup.gb', format='genbank')
+    SeqIO.write(seq, '/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/augur/source-data/'+virus+'_outgroup.gb', format='genbank')
 

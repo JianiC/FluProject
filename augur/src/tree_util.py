@@ -109,7 +109,7 @@ def get_dates(node):
 
 def dendropy_to_json(node, extra_attr = []):
 	json = {}
-	str_attr = ['country','region','clade','strain','date','host']
+	str_attr = ['country','region','clade','strain','date']
 	num_attr = ['xvalue', 'yvalue', 'num_date']
 	for prop in str_attr:
 		if hasattr(node, prop):

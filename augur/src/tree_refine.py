@@ -36,6 +36,7 @@ class tree_refine(object):
 		self.add_nuc_mutations()
 		if self.cds is not None:
 			self.translate_all()
+			#self.translate_allh()
 		self.reduce()
 		self.layout()
 		self.define_trunk()
@@ -43,13 +44,15 @@ class tree_refine(object):
 		tmp_nucseqs = [SeqRecord(Seq(node.seq), id=node.strain, 
 					  annotations = {'num_date':node.num_date, 'region':node.region}) 
 					  for node in self.tree.leaf_node_iter()]
+		'''
 		tmp_nucseqsh = [SeqRecord(Seq(node.seq), id=node.strain,
 						annotationsh = {'num_date':node.num_date, 'host':node.host})
 						for node in self.tree.leaf_node_iter()]
+		'''
 		tmp_nucseqs.sort(key = lambda x:x.annotations['num_date'])
-		tmp_nucseqsh.sort(key = lambda x:x.annotationsh['num_date'])
+		#tmp_nucseqsh.sort(key = lambda x:x.annotationsh['num_date'])
 		self.nuc_aln = MultipleSeqAlignment(tmp_nucseqs)
-		self.nuc_alnh = MultipleSeqAlignment(tmp_nucseqsh)
+		#self.nuc_alnh = MultipleSeqAlignment(tmp_nucseqsh)
 
 
 	def remove_outgroup(self):
@@ -114,20 +117,31 @@ class tree_refine(object):
 			node.aa_seq = {}
 			for anno, feature in self.cds.iteritems():
 				node.aa_seq[anno] = translate(feature.extract(node.seq), to_stop = False)
+			#print node.aa_seq
 
 		self.add_aa_mutations()
 		self.aa_aln = {}
 		for anno in self.cds:
 			tmp_aaseqs = [SeqRecord(Seq(node.aa_seq[anno]), id=node.strain, 
 			              annotations = {'num_date':node.num_date, 'region':node.region}) 
-						  for node in self.tree.leaf_node_iter()]
+									for node in self.tree.leaf_node_iter()]
 			tmp_aaseqs.sort(key = lambda x:x.annotations['num_date'])
+			self.aa_aln[anno] = MultipleSeqAlignment(tmp_aaseqs)
+			
+	'''def translate_allh(self):
+		for node in self.tree.postorder_node_iter():
+			node.aa_seq = {}
+			for anno, feature in self.cds.iteritems():
+				node.aa_seq[anno] = translate(feature.extract(node.seq), to_stop = False)
+
+		self.add_aa_mutations()
+		self.aa_alnh = {}
+		for anno in self.cds:
 			tmp_aaseqsh = [SeqRecord(Seq(node.aa_seq[anno]), id=node.strain,
-							annotationsh = {'num_date':node.num_date, 'jost':node.host})
+							annotationsh = {'num_date':node.num_date, 'host':node.host})
 							for node in self.tree.leaf_node_iter()]
 			tmp_aaseqsh.sort(key = lambda x:x.annotationsh['num_date'])
-			self.aa_aln[anno] = MultipleSeqAlignment(tmp_aaseqs)
-			self.aa_aln[anno] = MultipleSeqAlignment(tmq_aaseqsh)
+			self.aa_alnh[anno] = MultipleSeqAlignment(tmq_aaseqsh)'''
 
 	def add_aa_mutations(self):
 		if hasattr(self.tree.seed_node, 'aa_seq'):
@@ -136,7 +150,7 @@ class tree_refine(object):
 					child.aa_muts = {}
 				for anno, parent_aa_seq in node.aa_seq.iteritems():
 					for child in node.child_nodes():
-						child.aa_muts[anno] = ','.join([anc+str(pos)+der for pos,anc, der in 
+						child.aa_muts[anno] = ','.join([anc+str(pos)+der for pos, anc, der in 
 							zip(range(1,len(parent_aa_seq)+1), parent_aa_seq, child.aa_seq[anno]) if anc!=der])
 			self.tree.seed_node.aa_muts={}
 		else:
@@ -145,7 +159,7 @@ class tree_refine(object):
 	def add_nuc_mutations(self):
 		for node in self.tree.postorder_internal_node_iter():
 			for child in node.child_nodes():
-				child.nuc_muts = ','.join([anc+str(pos)+der for pos,anc, der in 
+				child.nuc_muts = ','.join([anc+str(pos)+der for pos, anc, der in 
 						zip(range(1,len(node.seq)+1), node.seq, child.seq) if anc!=der])
 		self.tree.seed_node.nuc_muts=""
 
@@ -153,6 +167,7 @@ class tree_refine(object):
 		"""Return y location based on recursive mean of daughter locations"""
 		if node.is_leaf():
 			return node.yvalue
+			print "node.yvalue", node.yvalue
 		else:
 			if node.child_nodes():
 				return np.mean([n.yvalue for n in node.child_nodes()])
@@ -170,12 +185,13 @@ class tree_refine(object):
 		for node in self.tree.postorder_node_iter():
 			node.yvalue = self.get_yvalue(node)
 			node.xvalue = node.distance_from_root()
+			#print "yvalue", yvalue, "xvalue", xvalue
 
 	def add_node_attributes(self):
 		for v in self.viruses:
 			if v.strain in self.node_lookup:
 				node = self.node_lookup[v.strain]
-				for attr in self.fasta_fields.values() + ['num_date', 'db', 'region', 'host', 'country']:
+				for attr in self.fasta_fields.values() + ['num_date', 'db', 'region', 'country']:
 					try:
 						node.__setattr__(attr, v.__getattribute__(attr))
 					except:

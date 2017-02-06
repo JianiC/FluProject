@@ -4,7 +4,7 @@ import cPickle
 
 if __name__=="__main__":
 	parser = argparse.ArgumentParser(description='Process virus sequences, build tree, and prepare of web visualization')
-	parser.add_argument('--prefix', type = str, default = '/Users/yujia_zhou/Documents/Work/H9_nextflu-master/augur/', help='path+prefix of file dumps')
+	parser.add_argument('--prefix', type = str, default = '/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/augur/', help='path+prefix of file dumps')
 	parser.add_argument('--seasons', default = [1995, 2015], help='year range to evalutate predictors for', nargs='+')
 	params = parser.parse_args()
 	virus_config.update(params.__dict__)
