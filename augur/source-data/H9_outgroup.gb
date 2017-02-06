@@ -1,11 +1,11 @@
 LOCUS       AY206671                1683 bp    mRNA    linear   VRL 03-MAR-2003
-DEFINITION  Influenza A virus (A/duck/HongKong/147/1977(H9N6)) hemagglutinin
+DEFINITION  Influenza A virus (A/duck/Hong Kong/147/77(H9N6)) hemagglutinin
             precursor, mRNA, complete cds.
 ACCESSION   AY206671
-VERSION     AY206671.1  GI:28775925
+VERSION     AY206671.1
 KEYWORDS    .
-SOURCE      Influenza A virus (A/duck/HongKong/147/1977(H9N6))
-  ORGANISM  Influenza A virus (A/duck/HongKong/147/1977(H9N6))
+SOURCE      Influenza A virus (A/duck/Hong Kong/147/1977(H9N6))
+  ORGANISM  Influenza A virus (A/duck/Hong Kong/147/1977(H9N6))
             Viruses; ssRNA viruses; ssRNA negative-strand viruses;
             Orthomyxoviridae; Influenzavirus A.
 REFERENCE   1  (bases 1 to 1683)
@@ -25,15 +25,15 @@ REFERENCE   2  (bases 1 to 1683)
             Lauderdale St., Memphis, TN 38105, USA
 FEATURES             Location/Qualifiers
      source          1..1683
+                     /organism="Influenza A virus (A/duck/Hong
+                     Kong/147/1977(H9N6))"
                      /mol_type="mRNA"
+                     /strain="A/duck/Hong Kong/147/77(H9N6)"
                      /db_xref="taxon:221113"
-                     /serotype="H9"
-                     /strain="A/duck/HongKong/147/1977(H9N6)
-                     /organism="Influenza A virus (A/duck/HongKong/147/1977(H9N6))"
      CDS             1..1683
-                     /db_xref="GI:28775926"
-                     /product="hemagglutinin precursor"
                      /codon_start=1
+                     /product="hemagglutinin precursor"
+                     /protein_id="AAO46077.1"
                      /translation="METIALIAILLMVTTSNADKICIGYQSTNSTETVDTLTENNVPV
                      THTKELLHTEHNGMLCATNLGHPLILDTCTIEGLVYGNPSCDLLLGGKEWSYIVERSS
                      AVNGMCYPGNVENLEELRSFFSSANSYRRIQIFPDTIWNVTYTGTSRACSNSFYRSMR
@@ -44,18 +44,7 @@ FEATURES             Location/Qualifiers
                      IIDKMNKQYEIIDHEFSEIEARLNMINNKIDDQIQDIWAYNAELLVLLENQKTLDEHD
                      ANVNNLYNKVKRALGSNAIEDGNGCFELYHKCDDQCMETIRNGTYDRQKYQEESKLER
                      QKIEGVKLESEGTYKILTIYSTVASSLVLAMGFAAFLFWAMSNGSCRCNICI"
-                     /protein_id="AAO46077.1"
-     CDS             1..54
-                     /product="Signal peptide"
-                     /gene="SigPep"
-     CDS             55..1008
-                     /product="HA1 protein"
-                     /gene="HA1"
-     CDS             1009..1683
-                     /product="HA2 protein"
-                     /gene="HA2"
-
-ORIGIN
+ORIGIN      
         1 atggaaacaa tagcactaat agctatactg ttaatggtaa caacaagcaa tgcagacaaa
        61 atctgcatcg gctaccagtc aacaaactcc acggaaactg ttgatacact aacagaaaac
       121 aatgttcctg tgacacatac caaagaattg ctccacacag agcacaatgg aatgttgtgt

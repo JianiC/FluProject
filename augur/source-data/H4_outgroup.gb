@@ -1,0 +1,93 @@
+LOCUS       FLAHAH4N6               1695 bp    RNA     linear   VRL 20-DEC-2007
+DEFINITION  Influenza A virus (A/duck/Czechoslovakia/1956(H4N6)) gene for
+            hemagglutinin precursor, complete cds.
+ACCESSION   D90302
+VERSION     D90302.1
+KEYWORDS    .
+SOURCE      Influenza A virus (A/duck/Czechoslovakia/1956(H4N6))
+  ORGANISM  Influenza A virus (A/duck/Czechoslovakia/1956(H4N6))
+            Viruses; ssRNA viruses; ssRNA negative-strand viruses;
+            Orthomyxoviridae; Influenzavirus A.
+REFERENCE   1  (bases 1 to 1695)
+  AUTHORS   Nobusawa,E., Aoyama,T., Kato,H., Suzuki,Y., Tateno,Y. and
+            Nakajima,K.
+  TITLE     Comparison of complete amino acid sequences and receptor-binding
+            properties among 13 serotypes of hemagglutinins of influenza A
+            viruses
+  JOURNAL   Virology 182 (2), 475-485 (1991)
+   PUBMED   2024485
+COMMENT     These data kindly submitted in computer readable form by: Eri
+            Nobusawa
+            Nagoya City University
+            Medical School
+            Mizuho-cho, Mizuho-ku
+            Nagoya City 467
+            Japan.
+FEATURES             Location/Qualifiers
+     source          1..1695
+                     /organism="Influenza A virus
+                     (A/duck/Czechoslovakia/1956(H4N6))"
+                     /mol_type="genomic RNA"
+                     /strain="A/Duck/Czechoslovakia/1956"
+                     /serotype="H4N6"
+                     /db_xref="taxon:385590"
+                     /note="11 day-old embryonated chicken;
+                     synonym: Influenza A virus
+                     (A/Duck/Czechoslovakia/56(H4N6))"
+                     /collection_date="01-Jan-1956"
+     gene            1..1695
+                     /gene="HA"
+     CDS             1..1695
+                     /gene="HA"
+                     /codon_start=1
+                     /product="hemagglutinin precursor"
+                     /protein_id="BAA14332.1"
+                     /translation="MLSIVILFLLIAENSSQNYTGNPVICMGHHAVANGTMVKTLADD
+                     QVEVVTAQELVESQNLPELCPSPLRLVDGQTCDIINGALGSPGCDHLNGAEWDVFIER
+                     PNAVDTCYPFDVPEYQSLRSILANNGKFEFIAEEFQWNTVKQNGKSGACKRANVDDFF
+                     NRLNWLVKSDGNAYPLQNLTKINNGDYARLYIWGVHHPSTSTEQTNLYKNNPGRVTVS
+                     TKTSQTSVVPDIGSRPLVRGQSGRVSFYWTIVEPGDLIVFNTIGNLIAPRGHYKLNNQ
+                     KKSTILNTAIPIGSCVSKCHTDKGSLSTTKPFQNISRIAVGDCPRYVKQGSLKLATGM
+                     RNIPEKASRGLFGAIAGFIENGWQGLIDGWYGFRHQNAEGTGTAADLKSTQAAIDQIN
+                     GKLNRLIEKTNDKYHQIEKEFEQVEGRIQDLENYVEDTKIDLWSYNAELLVALENQHT
+                     IDVTDSEMNKLFERVRRQLRENAEDKGNGCFEIFHKCDNNCIESIRNGTYDHDIYRDE
+                     AINNRFQIQGVKLTQGYKDIILWISFSISCFLLVALLLAFILWACQNGNIRCQICI"
+     sig_peptide     1..48
+                     /gene="HA"
+     mat_peptide     49..1026
+                     /gene="HA"
+                     /product="HA1"
+     mat_peptide     1030..1692
+                     /gene="HA"
+                     /product="HA2"
+ORIGIN      
+        1 atgctatcaa ttgtgatttt gtttctgctc atagcagaga actcttccca aaactacaca
+       61 ggaaaccctg tgatatgcat gggacatcat gctgtggcca atgggactat ggtaaagacc
+      121 ctagccgatg atcaagtgga agtggtcact gcacaggaac tggtagaatc acaaaatctc
+      181 ccggaactat gtccgagccc tctgagacta gttgacggcc agacctgtga tatcatcaat
+      241 ggagcattgg ggagcccagg gtgtgaccat ttgaatggtg cagaatggga cgttttcata
+      301 gagaggccca atgcagtaga cacttgctat ccatttgatg tgccagagta ccagagtctg
+      361 agaagcatac tcgccaacaa tgggaaattc gaattcattg ccgaagaatt ccaatggaac
+      421 acggtgaagc aaaatggaaa atccggagcc tgcaagaggg caaatgtgga tgatttcttt
+      481 aacaggctaa actggctggt gaagtcagat gggaatgcgt acccccttca gaatttgaca
+      541 aagataaaca atggggatta tgcaaggctt tacatctggg gagttcatca cccttcgaca
+      601 agcacagagc aaaccaacct gtacaagaat aaccctggaa gagtcactgt gtctaccaaa
+      661 actagtcaaa caagtgtagt gcctgacatt ggcagcagac ccttggtgag aggacaaagt
+      721 ggcagagtga gtttctactg gactattgta gagcctggag acttgatagt cttcaacaca
+      781 atagggaatc taattgcccc gagaggccat tacaagttaa acaatcagaa gaagagcaca
+      841 attctaaata ctgcaattcc cataggctca tgtgtcagca aatgtcacac agacaaaggt
+      901 tctctctcta caactaagcc cttccaaaat atctcgagga tagcagttgg agactgcccc
+      961 agatatgtca aacagggctc tctaaaactt gcaacaggga tgaggaacat tcctgaaaag
+     1021 gcatcaagag ggctttttgg agcaatagct gggttcatag agaatggctg gcaaggtcta
+     1081 atcgatggtt ggtatggatt cagacaccag aatgcagaag gaacaggaac agcggcagat
+     1141 ctcaaatcca ctcaggcagc cattgatcaa atcaatggga aacttaaccg tcttattgag
+     1201 aagacaaacg ataaatacca tcaaatcgaa aaagagttcg agcaagttga aggaagaatt
+     1261 caagatctgg aaaactatgt tgaggacaca aagattgatt tatggtcata taatgcagag
+     1321 ctattagtcg ctctagaaaa ccaacacact atagacgtga ctgattcaga aatgaacaaa
+     1381 ctctttgaaa gagtaaggcg tcaactcaga gagaatgctg aagacaaagg gaatgggtgt
+     1441 ttcgaaatat tccacaagtg tgataacaac tgcattgaaa gtattcggaa tgggacttat
+     1501 gatcatgata tttatagaga tgaagcaatc aacaatcgat tccaaatcca gggagtcaaa
+     1561 ttgacccagg gatataagga catcattctt tggatttcat tctccatatc atgctttttg
+     1621 ctcgtagcac tacttttagc cttcattttg tgggcttgtc agaacggaaa catccggtgc
+     1681 cagatttgta tttag
+//

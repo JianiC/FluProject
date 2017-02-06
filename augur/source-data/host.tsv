@@ -1,4 +1,4 @@
-Species	HostType
+species	host
 African_Stonechat	Avian
 Anser_fabalis	Avian
 Anthropoides_virgo	Avian
@@ -6,6 +6,8 @@ avian	Avian
 baikal_teal	Avian
 bar-tailed_godwit	Avian
 Bewick's_swan	Avian
+Bewick_swan	Avian
+Bewicks_swan	Avian
 bird	Avian
 black_swan	Avian
 black-billed_magpie	Avian
@@ -13,6 +15,8 @@ black-headed_gull	Avian
 brambling	Avian
 canine	Other_mammal
 Chicken	Avian
+chicken	Avian
+Ck	Avian
 Chinese_francolin	Avian
 Chinese_Hwamei	Avian
 chukkar	Avian
@@ -20,13 +24,16 @@ common_coot	Avian
 common_murre	Avian
 dove	Avian
 Duck	Avian
+duck	Avian
 eastern_curlew	Avian
 egret	Avian
 emperor_goose	Avian
 Environment	Avian
+Enviroment	Avian
 equine	Other_mammal
 Eurasian_wigeon		Avian
 Falcon	Avian
+feces	Avian
 feral_duck	Avian
 ferret	Other_mammal
 gadwall	Avian
@@ -34,8 +41,13 @@ garganey	Avian
 Goose	Avian
 green-winged_teal	Avian
 Guinea fowl	Avian
+Guinea_fowl	Avian
+guinea_fowl	Avian
+guineafowl	Avian
+Gf	Avian
 houbara	Avian
 Human	Human
+human	Human
 Japanese_Quail	Avian
 knot	Avian
 Korean_native_chicken	Avian
@@ -55,6 +67,7 @@ partridge	Avian
 Pekin_duck	Avian
 pelican	Avian
 pheasant	Avian
+Ph	Avian
 pigeon	Avian
 pink-footed_goose	Avian
 poultry	Avian
@@ -66,11 +79,13 @@ shorebird	Avian
 shovelar	Avian
 silkie_chicken	Avian
 silky_chicken	Avian
+SCk	Avian
 silky_fowl	Avian
 sparrow	Avian
 spot-billed_duck	Avian
 stone_curlew	Avian
 Swine	Swine
+Sw	Swine
 teal	Avian
 thick-billed_murre	Avian
 turkey	Avian

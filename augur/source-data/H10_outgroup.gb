@@ -1,0 +1,100 @@
+LOCUS       CY005993                1728 bp    cRNA    linear   VRL 25-SEP-2006
+DEFINITION  Influenza A virus (A/mallard duck/ALB/302/1977(H10N7)) segment 4,
+            complete sequence.
+ACCESSION   CY005993
+VERSION     CY005993.1
+KEYWORDS    .
+SOURCE      Influenza A virus (A/mallard duck/ALB/302/1977(H10N7))
+  ORGANISM  Influenza A virus (A/mallard duck/ALB/302/1977(H10N7))
+            Viruses; ssRNA viruses; ssRNA negative-strand viruses;
+            Orthomyxoviridae; Influenzavirus A.
+REFERENCE   1  (bases 1 to 1728)
+  AUTHORS   Obenauer,J.C., Denson,J., Mehta,P.K., Su,X., Mukatira,S.,
+            Finkelstein,D.B., Xu,X., Wang,J., Ma,J., Fan,Y., Rakestraw,K.M.,
+            Webster,R.G., Hoffmann,E., Krauss,S., Zheng,J., Zhang,Z. and
+            Naeve,C.W.
+  TITLE     Large-scale sequence analysis of avian influenza isolates
+  JOURNAL   Science 311 (5767), 1576-1580 (2006)
+   PUBMED   16439620
+REFERENCE   2  (bases 1 to 1728)
+  AUTHORS   Obenauer,J.C., Denson,J., Mehta,P.K., Su,X., Mukatira,S.,
+            Finkelstein,D.B., Xu,X., Wang,J., Ma,J., Fan,Y., Rakestraw,K.M.,
+            Webster,R.G., Hoffmann,E., Krauss,S., Zheng,J., Zhang,Z. and
+            Naeve,C.W.
+  TITLE     Direct Submission
+  JOURNAL   Submitted (24-NOV-2005) Hartwell Center for Bioinformatics &
+            Biotechnology, St. Jude Children's Research Hospital, 332 North
+            Lauderdale Str., Memphis, TN 38105, USA
+FEATURES             Location/Qualifiers
+     source          1..1728
+                     /organism="Influenza A virus (A/mallard
+                     duck/ALB/302/1977(H10N7))"
+                     /mol_type="viral cRNA"
+                     /strain="A/mallard duck/ALB/302/1977"
+                     /serotype="H10N7"
+                     /host="Avian"
+                     /db_xref="taxon:352593"
+                     /segment="4"
+                     /country="Canada: Alberta"
+                     /collection_date="31-Aug-1977"
+     primer_bind     1..19
+                     /note="PCR amplification primer sequence"
+     gene            20..1705
+                     /gene="HA"
+     CDS             20..1705
+                     /gene="HA"
+                     /function="receptor binding and fusion protein"
+                     /codon_start=1
+                     /product="hemagglutinin"
+                     /protein_id="ABB87956.1"
+                     /translation="MYKIVLVLALLGAVNGLDKICLGHHAVPNGTIVKTLTNEKEEVT
+                     NATETVESKTLDRLCMKGRNYKDLGNCHPIGMIIGTPACDLHLTGTWDTLIERENSIA
+                     YCYPGATVNEEALRQKIMESGGIDKISTGFTYGSSINSAGTTKACMRYGGNSFYAELK
+                     WLVSKTKGQNFPQTTNTYRNTDSAEHLIVWGIHHPSSTQEKNDLYGTQSLSISVGSST
+                     YQNNFVPVVGARPQVNGQSGRIDFHWTIVRPGDNITFSHNGGLIAPSRVSKLKGRGLG
+                     IQSGSLVDNDCESKCFWKGGSINTKLPFQNLSPRTVGQCPKYVNKKSLLLATGMRNVP
+                     EIIQERGLFGAIAGFIENGWEGMVDGWYGFRHQNAQGTGQAADYKSTQAAIDQITGKL
+                     NRLIEKTNTEFESIESEFSEIEHQIGNVINWTKDSITDIWTYQAELLVAMENQHTIDM
+                     ADSEMLNLYERVRKQLRQNAEEDGKGCFEIYHNCDDSCMESIRNNTYDHTQYREEALL
+                     NRLSINPVKLSSGYKDVILWFSFGASCFVLLAVIMGLVFFCLKNGNMRCTICI"
+     sig_peptide     20..67
+                     /gene="HA"
+     mat_peptide     68..1039
+                     /gene="HA"
+                     /product="HA1"
+     mat_peptide     1040..1702
+                     /gene="HA"
+                     /product="HA2"
+     primer_bind     complement(1709..1728)
+                     /note="PCR amplification primer sequence"
+ORIGIN      
+        1 agcaaaagca ggggtcacaa tgtacaaaat agtgcttgta ctcgcgctcc ttggagcagt
+       61 gaacggtctt gataaaatat gccttggaca tcatgcagtc cccaatggca ccatcgtgaa
+      121 gaccctcaca aatgaaaaag aagaggtgac caatgctact gaaacagtag aaagcaaaac
+      181 actggacaga ctctgcatga aaggtcggaa ttacaaagac ttgggtaact gccatccgat
+      241 agggatgata ataggaactc ctgcctgtga cttgcacctc accgggacat gggacactct
+      301 gatagagaga gagaattcca ttgcctattg ttatccaggc gcaactgtga acgaggaggc
+      361 attaagacag aaaatcatgg aaagtggagg gattgacaag ataagcactg gatttacata
+      421 cgggtcatcc atcaattcag ctggaactac taaagcatgt atgaggtacg gagggaacag
+      481 cttctatgca gaactaaaat ggctagtgtc aaagaccaaa ggacagaact tcccacagac
+      541 aacaaataca tacagaaata cagactcagc agaacatctt atagtctggg gaattcacca
+      601 tccctctagc acacaagaaa agaatgatct gtatgggacc cagtcacttt ctatttcggt
+      661 agggagttct acttatcaaa acaactttgt gccagtagtg ggagcaagac cacaagtaaa
+      721 tggtcaaagt ggacggattg atttccattg gacaatagta aggccaggtg ataacatcac
+      781 tttttcacat aacggtggac taatagcacc tagtagagta agcaaattaa aaggacgagg
+      841 cctaggtatc caatcaggat cattagtgga taatgactgt gaatcaaaat gcttttggaa
+      901 aggtgggtcc atcaatacca aactcccttt tcaaaatcta tcacctagaa cggtgggcca
+      961 atgtcccaaa tatgtgaata aaaagagcct attacttgca accggaatga ggaatgttcc
+     1021 ggagatcatc caagagagag gtctgtttgg ggcaatagct ggattcatag aaaatggatg
+     1081 ggaagggatg gtggatggtt ggtatggctt cagacaccag aatgctcaag gcaccggcca
+     1141 ggcagctgat tacaaaagta ctcaagcggc tatagatcaa ataaccggga aattgaacag
+     1201 actgatagag aagacgaaca cggagttcga atccatagaa tctgaattca gtgaaataga
+     1261 acatcaaatc ggcaatgtga taaattggac taaagattct ataacagaca tctggactta
+     1321 ccaagctgaa ttgctggtag caatggaaaa tcagcacaca attgacatgg ctgattcaga
+     1381 gatgctgaat ctatatgaga gagtgaggaa gcaactaagg caaaatgcag aagaagatgg
+     1441 aaaagggtgc tttgaaatat atcacaactg cgatgatagc tgtatggaga gcattagaaa
+     1501 caacacctat gatcatacac aatatagaga agaggcactc ctgaatagac tcagcattaa
+     1561 tccggtgaag ctctcttctg ggtacaaaga tgttatacta tggtttagct tcggggcgtc
+     1621 atgcttcgta cttttggctg tcatcatggg acttgttttc ttctgtttga aaaatggaaa
+     1681 catgcgatgc acaatctgta tttagttaaa aacacccttg tttctact
+//
