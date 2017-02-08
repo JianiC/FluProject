@@ -1,5 +1,5 @@
 import sys, time, os, argparse,shutil,subprocess, glob
-sys.path.append('/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/augur/src/')
+sys.path.append('/Users/yujiazhou/Documents/FluProject/augur/src/')
 sys.setrecursionlimit(10000)  # needed since we are dealing with large trees
 from Bio import SeqIO, AlignIO,Phylo
 from Bio.SeqRecord import SeqRecord
@@ -18,7 +18,7 @@ parser.add_argument('--lam_HI', type = float, default = 1.0, help='regularizatio
 parser.add_argument('--lam_avi', type = float, default = 1.0, help='regularization for avidity')
 parser.add_argument('--lam_pot', type = float, default = 0.2, help='regularization for potency')
 parser.add_argument('--interval', nargs = '+', type = float, default = None, help='interval from which to pull sequences')
-parser.add_argument('--path', type = str, default = '/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/augur/src/data/', help='path of file dumps')
+parser.add_argument('--path', type = str, default = '/Users/yujiazhou/Documents/FluProject/augur/src/data/', help='path of file dumps')
 parser.add_argument('--prefix', type = str, default = '', help='prefix of file dumps including auspice')
 parser.add_argument('--test', default = False, action="store_true",  help ="don't run the pipeline")
 parser.add_argument('--start', default = 'filter', type = str,  help ="start pipeline at specified step")
@@ -32,11 +32,11 @@ parser.add_argument('--estimate_fitness_model', default = False, action="store_t
 
 virus_config = {
 	'date_format':{'fields':'%Y-%m-%d', 'reg':r'\d\d\d\d-\d\d-\d\d'},
-	'fasta_fields':{0:'strain', 1:'isolate_id', 3:'passage', 5:'date', 7:'lab', 8:"accession"},
+	'fasta_fields':{0:'strain', 1:'isolate_id', 3:'passage', 5:'date', 7:'lab', 8:'accession', 9:'host'},
 	# frequency estimation parameters
 	'aggregate_regions': [  ("global", None), ("NA", ["NorthAmerica"]), ("EU", ["Europe"]),
 							("AS", ["China", "SoutheastAsia", "EastAsia"]), ("OC", ["Oceania"]) ],
-	#'aggregate_hosts': [  ("globalh", None), ("A", ["Avian"]), ("S", ["Swine"]), ("O", ["Other mammal"]), ("H", ["Human"]) ],
+	#'aggregate_hosts': [  ("global", None), ("A", ["Avian"]), ("S", ["Swine"]), ("O", ["Other mammal"]), ("H", ["Human"]) ],
 	'frequency_stiffness':10.0,
 	'verbose':2,
 	'tol':2e-4, #tolerance for frequency optimization
@@ -51,7 +51,7 @@ virus_config = {
 
 class process(virus_frequencies):
 	"""generic template class for processing virus sequences into trees"""
-	def __init__(self, path = '/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/augur/src/data/', prefix = 'virus', time_interval = (2012.0, 2015.0),
+	def __init__(self, path = '/Users/yujiazhou/Documents/FluProject/augur/src/data/', prefix = 'virus', time_interval = (2012.0, 2015.0),
 	             run_dir = None, virus = None, resolution = None, date_format={'fields':'%Y-%m-%d', 'reg':r'\d\d\d\d-\d\d-\d\d'},
 				 min_mutation_frequency = 0.01, min_genotype_frequency = 0.1, **kwargs):
 		self.path = path
@@ -79,14 +79,13 @@ class process(virus_frequencies):
 		else:
 			self.run_dir = run_dir
 		self.run_dir = self.run_dir.rstrip('/')+'/'
-		self.auspice_tree_fname = 		'/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/auspice/data/' + self.prefix + self.resolution_prefix + 'tree.json'
-		self.auspice_sequences_fname = 	'/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/auspice/data/' + self.prefix + self.resolution_prefix + 'sequences.json'
-		self.auspice_frequency_fname = 	'/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/auspice/data/' + self.prefix + self.resolution_prefix + 'frequencies.json'
-		self.auspice_meta_fname = 		'/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/auspice/data/' + self.prefix + self.resolution_prefix + 'meta.json'
-		self.auspice_HI_fname = 		'/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/auspice/data/' + self.prefix + self.resolution_prefix + 'HI.json'
-		self.accession_fname = 		'/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/auspice/data/' + self.prefix + self.resolution_prefix + 'accession_numbers.tsv'
-		self.species_fname = 		'/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/auspice/data/' + self.prefix + self.resolution_prefix + 'species.tsv'
-		self.auspice_HI_display_mutations =	 '/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/auspice/auspice/_data/HI_mutation_effects.json'
+		self.auspice_tree_fname = 		'/Users/yujiazhou/Documents/FluProject/auspice/data/' + self.prefix + self.resolution_prefix + 'tree.json'
+		self.auspice_sequences_fname = 	'/Users/yujiazhou/Documents/FluProject/auspice/data/' + self.prefix + self.resolution_prefix + 'sequences.json'
+		self.auspice_frequency_fname = 	'/Users/yujiazhou/Documents/FluProject/auspice/data/' + self.prefix + self.resolution_prefix + 'frequencies.json'
+		self.auspice_meta_fname = 		'/Users/yujiazhou/Documents/FluProject/auspice/data/' + self.prefix + self.resolution_prefix + 'meta.json'
+		self.auspice_HI_fname = 		'/Users/yujiazhou/Documents/FluProject/auspice/data/' + self.prefix + self.resolution_prefix + 'HI.json'
+		self.accession_fname = 		'/Users/yujiazhou/Documents/FluProject/auspice/data/' + self.prefix + self.resolution_prefix + 'accession_numbers.tsv'
+		self.auspice_HI_display_mutations =	 '/Users/yujiazhou/Documents/FluProject/auspice/auspice/_data/HI_mutation_effects.json'
 		self.nuc_alphabet = 'ACGT-N'
 		self.aa_alphabet = 'ACDEFGHIKLMNPQRSTVWY*X'
 		virus_frequencies.__init__(self, **kwargs)
@@ -117,15 +116,9 @@ class process(virus_frequencies):
 		if hasattr(self, 'aa_aln'):
 			with open(self.aa_seq_fname, 'w') as outfile:
 				cPickle.dump(self.aa_aln, outfile)
-		'''if hasattr(self, 'aa_alnh'):
-			with open(self.aa_seq_fname, 'w') as outfile:
-				cPickle.dump(self.aa_aln, outfile)'''
 		if hasattr(self, 'nuc_aln'):
 			with open(self.nuc_seq_fname, 'w') as outfile:
 				cPickle.dump(self.nuc_aln, outfile)
-		'''if hasattr(self, 'nuc_alnh'):
-			with open(self.nuc_seq_fname, 'w') as outfile:
-				cPickle.dump(self.nuc_alnh, outfile)'''
 		if hasattr(self, 'mutation_effects'):
 			with open(self.HI_model_fname, 'w') as outfile:
 				cPickle.dump((self.ref_strains, self.mutation_effects, self.virus_effect), outfile)
@@ -199,11 +192,7 @@ class process(virus_frequencies):
 						node["freq"][reg] = [round(x,3) for x in node["freq"][reg]]
 					except:
 						node["freq"][reg] = "undefined"
-				#for hos in node["freq"]:
-					#try:
-						#node["freq"][hos] = [round(x,3) for x in node["freq"][hos]]
-					#except:
-						#node["freq"][hos] = "undefined"
+				
 
 		if hasattr(self,"clade_designations"):
 			# find basal node of clade and assign clade x and y values based on this basal node
@@ -296,14 +285,7 @@ class process(virus_frequencies):
 		write_json(meta, self.auspice_meta_fname, indent=None)
 		self.export_accession_numbers()
 		
-		'''if hasattr(self,"date_host_count"):
-			meta["hosts"] = self.hosts 
-			meta["virus_states"] = [ [str(y)+'-'+str(m)] + [self.date_host_count[(y,m)][hos] for hos in self.hosts]
-															for y,m in sorted(self.date_host_count.keys()) ]
-		write_json(meta, self.auspice_meta_fname, indent=0)
-		self.export_accession_numbers()'''
 		
-	#zika related
 	'''def export_fasta_alignment(self):
 		print "Writing alignment"	
 		try:
@@ -318,10 +300,9 @@ class process(virus_frequencies):
 						handle.write(node.seq + "\n")
 					else:
 						print node.strain + " is missing metadata"
-			handle.close()'''
+			handle.close()
 
-	#zika related
-	'''def export_newick_tree(self):
+	def export_newick_tree(self):
 		print "Writing newick tree"
 		try:
 			handle = open(self.auspice_newick_fname, 'w')
@@ -368,7 +349,7 @@ class process(virus_frequencies):
 		ofile.close()
 
 	def htmlpath(self):
-		htmlpath = '/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/auspice/'
+		htmlpath = '/Users/yujiazhou/Documents/FluProject/auspice/'
 		if self.virus_type is not None:
 			htmlpath+=self.virus_type+'/'
 		if self.resolution is not None:
@@ -380,7 +361,7 @@ class process(virus_frequencies):
 		if "layout" in self.kwargs:
 			tmp_layout=self.kwargs["layout"]
 		else:
-			tmp_layout="/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/auspice/"
+			tmp_layout="/Users/yujiazhou/Documents/FluProject/auspice/"
 		with open(self.htmlpath()+'index.html','w') as out:
 			out.write("---\ntitle: nextaiv / "+self.virus_type+" / "+self.resolution_prefix.rstrip('_')
 					  +"\nlayout: "+tmp_layout
@@ -537,18 +518,6 @@ class process(virus_frequencies):
 		self.regions = sorted(regions)
 		self.region_totals = {reg:sum(val[reg] for val in self.date_region_count.values()) for reg in self.regions}
 		
-	'''def temporal_host_statistics(self):
-		from collections import defaultdict, Counter
-		self.date_host_count = defaultdict(lambda:defaultdict(int))
-		hosts = set()
-		for v in self.viruses:
-			if v.strain != self.outgroup['species']:
-				year, month, day = map(int, v.date.split('-'))
-				self.date_host_count[(year, month)][v.host]+=1
-				hosts.add(v.host)
-		self.hosts = sorted(hosts)
-		self.host_totals = {hos:sum(val[hos] for val in self.date_host_count.values()) for hos in self.hosts}'''
-		
 	def determine_variable_positions(self):
 		'''
 		calculates nucleoties_frequencies and aa_frequencies at each position of the alignment
@@ -619,10 +588,8 @@ class process(virus_frequencies):
 			self.all_mutation_frequencies(threshold = self.min_mutation_frequency, gene='nuc')
 		if 'genotypes' in tasks:
 			self.all_genotypes_frequencies(threshold = self.min_genotype_frequency)
-		#if 'specieshost' in tasks:
-			#self.all_specieshost_frequencies(threshold = self.min_specieshost_frequency)
-		if 'clades' in tasks:
-			self.all_clade_frequencies()
+		#if 'clades' in tasks:
+			#self.all_clade_frequencies()
 		if 'nuc_clades' in tasks:
 			self.all_clade_frequencies(gene='nuc')
 		if 'tree' in tasks:
