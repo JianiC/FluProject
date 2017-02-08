@@ -17,9 +17,9 @@ from itertools import izip
 virus_config.update({
 	# data source and sequence parsing/cleaning/processing
 	'virus':'H9',
-	'alignment_file':'/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/augur/src/data/H9_gisaid_epiflu_sequence.fasta',
+	'alignment_file':'/Users/yujiazhou/Documents/FluProject/augur/src/data/H9_gisaid_epiflu_sequence.fasta',
 	'outgroup':'A/duck/HongKong/147/1977',
-	#'force_include':'/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/augur/src/data/H9_HI_strains.txt',
+	#'force_include':'/Users/yujiazhou/Documents/FluProject/augur/src/data/H9_HI_strains.txt',
 	'force_include_all':False,
 	'date_spec':'year',
 	'max_global':True,   # sample as evenly as possible from different geographic regions
@@ -29,20 +29,18 @@ virus_config.update({
 	'min_mutation_frequency':0.01,
 	# define relevant clades in canonical HA1 numbering (+1)
 	# numbering starting at HA1 start, adding sp to obtain numbering from methionine
-	'''
-	'clade_designations': { "Y439":[('HA1',122,'F'), ('HA1',353,'P')],
+	''''clade_designations': { "Y439":[('HA1',122,'F'), ('HA1',353,'P')],
 							"Korea":[('HA1',107,'M'), ('HA1',122,'F'), ('HA1',127,'R'), ('HA1',130,'K'), ('HA1',132,'L'), ('HA1',134,'L'), ('HA1',179,'D'), ('HA1',212,'I'), ('HA1',299,'T'), ('HA1',353,'P'), ('HA1',473,'K')],
 						   	"G1":[('HA1',353,'P'), ('HA1',473,'K')],
 							"Ck-Bei":[('HA1',107,'M'), ('HA1',299,'T'), ('HA1',473,'K')],
 						   	"G9":[('HA1',107,'M'), ('HA1',299,'T'), ('HA1',473,'K')],
 						   	"Y280":[('HA1',299,'T'), ('HA1',473,'K')]
-							},
-	'''
-	#'epitope_masks_fname':'/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/augur/source-data/H9_epitope_masks.tsv',
+							},'''
+	#'epiope_masks_fname':'/Users/yujiazhou/Documents/FluProject/augur/source-data/H9_epitope_masks.tsv',
 	#'epitope_mask_version':'wolf',
-	#'HI_fname':'/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/augur/src/data/H9_HI_titers.txt',
+	#'HI_fname':'/Users/yujiazhou/Documents/FluProject/augur/src/data/H9_HI_titers.txt',
 	'auspice_prefix':'H9_',
-	'html_vars': {'coloring': 'ep, ne, rb, lbi, dfreq, region, date, cHI',
+	'html_vars': {'coloring': 'ep, ne, rb, lbi, dfreq, region, date, cHI, host',
 				   'gtplaceholder': 'HA1 positions...',
 					'freqdefault': 'Y439, Korea, G1, Ck-Bei, G9, Y280'},
 	'js_vars': {'LBItau': 0.0005, 'LBItime_window': 0.5, 'dfreq_dn':2},
@@ -70,7 +68,7 @@ class H9_filter(flu_filter):
 					"date": "1997-07-01",
 					"seq": "ATGGAAATAATAGCACTAATAGCTATACTGGTAGTGACAAAAACAAGCAATGCAGATAAAATTTGCATTGGCTACCAGTCAACAAACTCCACAGAAACTGTTGATACACTAGTAGAAAACAATGTCCCTGTGACACATACCAAAGAATTGCTCCACACAGAGCACAATGGAATGCTATGTGCAACAAACCTGGGGCACCCTCTCATCCTAGACACCTGCACCATCGAAGGGTTGGTGTACGGCAACCCTTCCTGTGATTTGCTACTGGGAGGGAAAGAATGGTCTTACATTGTCGAAAGATCATCAGCTGTCAATGGGATGTGTTACCCTGGAAGGGTAGAGAACCTGGAAGAACTCAGGTCTTTTTTCAGCTCCGCTCGCTCCTACAAAAGACTCCTGCTCTTTCCAGACAGAACTTGGAATGTGACTTACACTGGGACAAGCAAAGCATGTTCAAACTCATTCTACAGAAGTATGAGATGGCTGACACACAAGAGCGATTCTTACCCTATTCAAGACGCCCAATATACTAACGATTGGGGAAAGAATATTCTCTTCATGTGGGGCATACACCACCCACCTACTGATACTGAGCAAATAAATCTATACAAAAAAGCTGATACAACAACAAGTATAACAACGGAAGATATCAATCGAACTTTCAAACCAGTGATAGGGCCAAGGCCTCTTGTCAATGGTCAACAAGGGAGAATTGATTATTATTGGTCAGTACTAAAGCCAGGCCAGACACTGCGAGTGAGATCCAATGGGAATCTAATTGCCCCATGGTATGGACACATTCTTTCAGGAGAAAGCCATGGAAGAATCTTGAAGACCGATTTGAGTAGTGGCAACTGCGTAGTACAATGCCAAACTGAGAAAGGTGGTTTGAACACGACCTTGCCATTCCACAATGTCAGCAAGTATGCATTTGGGAACTGCCCCAAATATGTTGGAGTGAAGAGTCTCAAACTGGCAGTTGGTCTAAGGAATGTTCCTGCTGCATCATATAGAGGGCTCTTCGGTGCCATAGCTGGATTCATAGAAGGCGGTTGGCCAGGACTAGTTGCAGGCTGGTACGGGTTTCAGCATTCAAATGATCAAGGGGTTGGAATGGCCGCAGATAGGGAATCAACTCAAGAAGCAGTTGACAAGATAACATCCAAAGTAAATAACATAATCGACAAAATGAACAAGCAGTATGGA------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------T--------------------------------------------------------------------------------------"}
 			]
-		tmp_outgroup = SeqIO.read('/Users/yujiazhou/Documents/nextflu/H9_nextflu-master/augur/source-data/H9_outgroup.gb', 'genbank')
+		tmp_outgroup = SeqIO.read('/Users/yujiazhou/Documents/FluProject/augur/source-data/H9_outgroup.gb', 'genbank')
 		genome_annotation = tmp_outgroup.features
 		self.cds = {x.qualifiers['gene'][0]:x for x in genome_annotation
 				if 'gene' in x.qualifiers and x.type=='CDS' and
@@ -182,17 +180,17 @@ class H9_refine(tree_refine):
 		return ''.join(aaa[self.epitope_mask[:len(aa)]=='0'])
 
 	def receptor_binding_sites(self, aa):
-		
+
 		Receptor binding site mutations from Koel et al. 2014
 		These are (145, 155, 156, 158, 159, 189, 193) in canonical HA numbering
 		need to subtract one since python arrays start at 0
-		
+
 		sp = 16
-		rbs = map(lambda x:x+sp-1, [145, 155, 156, 158, 159, 189, 193])					
+		rbs = map(lambda x:x+sp-1, [145, 155, 156, 158, 159, 189, 193])
 		return ''.join([aa[pos] for pos in rbs])'''
-	
-	def get_total_peptide(self, node):	
-		#the concatenation of signal peptide, HA1, HA1		
+
+	def get_total_peptide(self, node):
+		#the concatenation of signal peptide, HA1, HA1
 		return node.aa_seq['SigPep']+node.aa_seq['HA1']+node.aa_seq['HA2']
 
 	'''def epitope_distance(self, aaA, aaB):
@@ -249,7 +247,6 @@ class H9_process(process, H9_filter, H9_clean, H9_refine, H9_fitness):
 		self.force_include = force_include
 		self.force_include_all = force_include_all
 		self.max_global = max_global
-		#self.max_globalh = max_globalh
 		process.__init__(self, **kwargs)
 		H9_filter.__init__(self,**kwargs)
 		H9_clean.__init__(self,**kwargs)
@@ -262,16 +259,13 @@ class H9_process(process, H9_filter, H9_clean, H9_refine, H9_fitness):
 		if 'filter' in steps:
 			print "--- Virus filtering at " + time.strftime("%H:%M:%S") + " ---"
 			self.filter()
-			'''if self.force_include is not None and os.path.isfile(self.force_include):
+			''''f self.force_include is not None and os.path.isfile(self.force_include):
 				with open(self.force_include) as infile:
 					forced_strains = [fix_name(line.strip().split('\t')[0]).upper() for line in infile]
 			else:
-				forced_strains = []
+				forced_strains = []'''
 			self.subsample(viruses_per_month,
-				prioritize=forced_strains, all_priority=self.force_include_all,
 				region_specific = self.max_global)
-			self.add_older_vaccine_viruses(dt = 3)
-			self.add_older_new_viruses(dt = 3)'''
 			self.dump()
 		else:
 			self.load()
@@ -327,7 +321,7 @@ class H9_process(process, H9_filter, H9_clean, H9_refine, H9_fitness):
 			self.temporal_regional_statistics()
 			# exporting to json, including the H9 specific fields
 			self.export_to_auspice(tree_fields = [
-				'ep', 'ne', 'rb', 'aa_muts','accession','isolate_id', 'lab','db', 'country', 'dfreq', 'fitness', 'pred_distance',
+				'ep', 'ne', 'rb', 'aa_muts','accession','isolate_id', 'lab','db', 'country', 'host', 'dfreq', 'fitness', 'pred_distance',
 				'dHI', 'cHI', 'mHI', 'mean_HI_titers', 'avidity_tree', 'avidity_mut', 'potency_mut', 'potency_tree', 'mean_potency_mut', 'mean_potency_tree', 'autologous_titers'],
 				   annotations = ['Y439', 'G1', 'Ck-Bei', 'G9', 'Korea', 'Y280'])
 			#self.export_fasta_alignment()
@@ -384,6 +378,8 @@ if __name__=="__main__":
 	virus_config['serum_Kc'] = 0.003
 	# pass all these arguments to the processor: will be passed down as kwargs through all classes
 	myH9 = H9_process(**virus_config)
+	print("virus_config['viruses_per_month']")
+	print(virus_config['viruses_per_month'])
 	if params.test:
 		myH9.load()
 	else:
@@ -393,4 +389,3 @@ if __name__=="__main__":
 				   #lam_avi = virus_config['lam_avi'],
 				   #lam_pot = virus_config['lam_pot'],
 				   )
-
