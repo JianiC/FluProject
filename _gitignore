@@ -9,8 +9,11 @@ HI_mutation_effects.tsv
 parameters_mutation.txt
 parameters_tree.txt
 temp_*
+*fasta
+*json
+*gb
 
-# Tex # 
+# Tex #
 ###################
 *aux
 *pdf
